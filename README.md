@@ -1,4 +1,4 @@
-# Django E-commerce
+# What is "Meccanico" ?
 Mecanicco is a website that facilitates how to obtain spare parts, simplifies access to high-quality products, how to discover car maintenance workshops, and simplifies the process of booking appointments for vehicle maintenance.
 
 ## Running this project
