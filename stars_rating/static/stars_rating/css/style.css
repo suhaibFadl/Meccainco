@@ -1,0 +1,39 @@
+.star-rating {
+    display: block;
+    font-size: 50px;
+    cursor: pointer;
+  }
+  
+.checked {
+    color: gold;
+  }
+    
+  .star-rating input[type="radio"] {
+    display: none;
+  }
+  
+  .star-rating label.star {
+    color: #ccc;
+    transition: color 0.2s;
+  }
+  
+  .star-rating input[type="radio"]:checked ~ label.star {
+    color: #ffcc00;
+    animation: pulsate 1s infinite;
+  }
+  
+  .disabled{
+    pointer-events: none;
+}
+
+  @keyframes pulsate {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }

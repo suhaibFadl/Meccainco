@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} Main{% endblock title %}    
+
+{% block content %}
+<h1>{{company.name}}</h1>
+{% for category in categories %}
+   <a href="{% url 'parts:brand_categories_details' brand=brand.name category=category.name %}">
+   <img src="{{ category.logo.url }}" alt="">
+   {{category.name}}
+    </a>
+{% endfor %}
+{% endblock content %}

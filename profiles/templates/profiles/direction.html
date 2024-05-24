@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block maps %}
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+{% endblock maps %}
+
+{% block title %} Direction {% endblock title %}    
+
+{% block content %}
+<style>
+    </style>
+    </head>
+    <body>
+    <style>
+    .coordinates {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    position: absolute;
+    bottom: 40px;
+    left: 10px;
+    padding: 5px 10px;
+    margin: 0;
+    font-size: 11px;
+    line-height: 18px;
+    border-radius: 3px;
+    display: none;
+    }
+    #map{
+        width: 100%; height: 300px;
+    }
+    </style>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
+    <div class="row row-sp row-eq-height m-5">
+            <div id='map' class="mx-auto"style='width: 100%; height: 400px;'></div>
+            <button class="btn btn-primary w-100 p-3" onclick="direction()"><h3 class="mb-0">direction</h3></button>
+    </div>
+    
+    {% if request.user.customerprofile.location %}
+    {{request.user.customerprofile.location.latitude|json_script:"start_lat"}}
+    {{request.user.customerprofile.location.longtitude|json_script:"start_longt"}}
+    {% else %}
+    {{location.latitude|json_script:"start_lat"}}
+    {{location.longtitude|json_script:"start_longt"}}
+    {% endif %}
+    
+    {{location.latitude|json_script:"destination_lat"}}
+    {{location.longtitude|json_script:"destination_longt"}}
+    
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.3/mapbox-gl-geocoder.min.js"></script>
+    <script src="{% static 'profiles/js/directions.js' %}"></script>
+
+{% endblock content %}

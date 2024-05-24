@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %}{{parts.category.name}}{% endblock title %}    
+
+{% block content %}
+    {% for part in parts %}
+    <img src="{{ part.image.url }}" alt="">
+    {{part.name}}
+    {{part.car.company.name}}
+    {{part.car.name}}
+    {% endfor %}
+{% endblock content %}

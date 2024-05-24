@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} Main{% endblock title %}    
+
+{% block content %}
+   <img src="{{ part.image.url }}" alt="">
+   {{part.name}}
+   {{part.car.company.name}}
+   {{part.car.name}}
+{% endblock content %}

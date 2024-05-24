@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} Create a Workshop{% endblock title %}    
+
+{% block content %}
+<div class="breadcrumbs text-center">
+    <div class="container">
+        <h1>Update My Data</h1>
+    </div>
+</div>
+<div class="login-account mt-5">
+    <div class="container">
+        <div class="row row-sp w-100">
+            <div class="mx-auto col-sp col-12 col-sm-12 col-md-6">
+                <form method="post" id="personForm" class="login-form needs-validation" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <div class="form-group text-center">
+                        <img  id="customerImage" src="{{ user.customerprofile.image.url }}"   class="img-fluid rounded-circle my-5 w-50"alt="Current Image" width="150">
+                    </div>
+                    <div class="form-group">
+                        <input type="file" id="newImage" class="form-control"name="image">
+                        <div class="invalid-feedback">Please select an image.</div>
+                    </div>
+                    <div class="form-group align-items-center">
+                        {{ form.phone_num }}
+                        <div class="invalid-feedback">Please enter a phone number.</div>
+                    </div>
+                    <div class="form-group button-action clearfix text-center w-100">
+                            <button type="submit" class="btn btn-primary btn-block">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // JavaScript to update the displayed image when a new file is selected
+    document.getElementById('newImage').addEventListener('change', function () {
+        var fileInput = this;
+        var customerImage = document.getElementById('customerImage');
+        
+        // Check if a file is selected
+        if (fileInput.files && fileInput.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                // Update the displayed image with the new image
+                customerImage.src = e.target.result;
+            };
+
+            // Read the selected file as a data URL
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    });
+</script>
+{% endblock content %}

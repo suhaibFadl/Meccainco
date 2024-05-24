@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'orders/css/style.css' %}">
+{% endblock css %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock scripts %}
+
+{% block title %}Reservation{% endblock title %}    
+{% block content %}
+<form method="POST" id="personForm" class="needs-validation" data-parts-url="{% url 'orders:ajax_load_cars' %}" novalidate enctype="multipart/form-data">
+    {% csrf_token %}
+    {% comment %} {{ form.as_p }} {% endcomment %}
+    <div class="container  w-50">
+        <div class="row justify--center"><h1>Reservation Request</h1></div>
+        <div class="form-group row mb-4" style="display:none">
+            {{ form.customer }}
+            <div class="invalid-feedback">Please select a brand.</div>
+        </div>
+        <div class="form-group row mb-4" style="display:none">
+            {{ form.workshop }}
+            <div class="invalid-feedback">Please select a brand.</div>
+        </div>
+        
+        <div class="form-group row mb-4">
+            <label for="{{ form.branch_name.id_for_label }}">Brand *</label>
+            {{ form.brand }}
+            <div class="invalid-feedback">Please select a brand.</div>
+        </div>
+        <div class="form-group row align-items-center mb-4">
+            <label for="{{ form.car.id_for_label }}"> Car Model *</label>
+            {{ form.car }}
+            <div class="invalid-feedback">Please select a car model.</div>
+        </div>
+        <div class="form-group row align-items-center mb-4">
+            <label for="{{ form.categories.id_for_label }}">Categories *</label>
+            {{ form.categories }}
+            <div class="invalid-feedback">Please select a category.</div>
+        </div>
+        <div class="form-group row align-items-center mb-4">
+            <label for="{{ form.note.id_for_label }}">Notes *</label>
+            {{ form.note }}
+            {% comment %} <div class="invalid-feedback">Please add a Note.</div> {% endcomment %}
+        </div>
+        <div class=" row align-items-center mb-4">
+            <label for="{{ form.images.id_for_label }}">Add Images *</label>
+            {{ form.images }}
+            {% comment %} <div class="invalid-feedback">Please select a category.</div> {% endcomment %}
+        </div>
+        <div id="image-preview"></div>
+        <input  class="row mx-auto w-100 btn btn-primary" type="submit" value="Submit">
+    </div>
+</form>
+    <script>
+        var url = "{% url 'products:ajax_load_cars' %}";
+     /*   $(document).ready(function () {
+            // Listen for changes in the file input field
+            $('#id_images').on('change', function () {
+                var preview = $('#image-preview');
+                preview.empty(); // Clear any previous images
+    
+                // Loop through the selected files and create image previews
+                for (var i = 0; i < this.files.length; i++) {
+                    var file = this.files[i];
+                    var reader = new FileReader();
+    
+                    // Create a container for the image and delete button
+                    var container = document.createElement('div');
+                    container.className = 'image-container'; // Apply CSS styling
+                    preview.append(container);
+    
+                    // Create a new image element
+                    var image = document.createElement('img');
+                    image.className = 'img-thumbnail'; // Apply CSS styling
+                    container.appendChild(image);
+    
+                    // Create a delete button
+                    var deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.className = 'btn btn-danger delete-button';
+                    container.appendChild(deleteButton);
+    
+                    // Read and display the image
+                    reader.onload = function (e) {
+                        image.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+    
+                    // Attach a click event to the delete button
+                    deleteButton.addEventListener('click', function () {
+                        container.remove(); // Remove the container when the delete button is clicked
+                    });
+                }
+            });
+        });*/
+    </script>
+    <script src="{% static 'orders/js/reservations.js' %}"></script>
+
+{% endblock content %}

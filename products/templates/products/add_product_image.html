@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %}Add Image {% endblock title %}    
+
+{% block content %}
+<form method='POST' action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group m-3">
+        <label>Upload image</label>
+        <input required name="images" type="file" multiple class="form-control-file">
+    </div>
+
+    <button type='submit' class="btn btn-primary m-3">Submit</button>
+</form>
+{% endblock content %}

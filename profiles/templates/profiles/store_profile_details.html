@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% load static %}
+{% load ratings %}
+{% comment %} {% include 'orders/static/js/order.js' %} {% endcomment %}
+
+{% block scripts %}
+{% endblock scripts %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'stars_rating/css/style.css' %}">
+{% endblock css %}
+{% block title %}{{store_profile.name}} Store{% endblock title %}    
+
+{% block content %}
+
+{% comment %} <h1>{{store_profile.branches.first.product_set.first.products_count}}</h1> {% endcomment %}
+{% comment %} <div class="container py-5 h-100"> {% endcomment %}
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col w-100">
+      <div class="card mb-3 mx-5 " style="border-radius: .5rem;">
+        <div class="row g-0">
+          <div class="col-md-3 
+            {% if store_profile.branches_locations.count == 0 %}
+              col-md-5
+            {% endif %} 
+            overflow-hidden gradient-custom text-center text-white"
+            style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+            <img src="{{store_profile.logo.url}}"
+              alt="Avatar" class="img-fluid rounded-circle my-5 w-50" />
+            <h2 class="mb-0">{{store_profile.name}}</h2>
+            <div class="">      
+              {% for i in "xxxxx" %}  <!-- Loop to render 5 stars -->
+                  {% if forloop.counter <= store_profile.average_rating %}  <!-- Display filled star if counter is less than or equal to rating -->
+                  <i class="spr-icon fa fa-star"></i>
+                  {% else %}  <!-- Display empty star if counter is greater than rating -->
+                  <i class="spr-icon fa fa-star-o"></i>                           
+                  {% endif %} 
+              {% endfor %}
+            </div>        
+            <h4  class="m-3">{{store_profile.bio}}</h4>
+            {% if store_profile.owner != request.user %}
+              <p><a href="{% url 'inboxes:chat'  id=store_profile.inbox.id type=1 %}" class="badge badge-light">Contact Us  <i style="font-size:15px" class="icon ti-email"></i></a></p>
+            {% else %}
+              <p><a href="{% url 'profiles:update_store_profile' %}" class="btn btn-outline-light border-light mt-2 py-0 px-1">Update a Store</a></p>
+            {% endif %}
+          </div>
+          <div class="col-md-4 
+            {% if store_profile.branches_locations.count == 0 %}
+              col-md-7
+            {% endif %}
+          ">
+            {% comment %} <div class="card-body mt-5 h-100 p-4"> {% endcomment %}
+              {% if store_profile.branches.all %}
+               <div class="row  mt-2 pl-2">
+                <h3>Our Branches</h3>
+                {% if store_profile.owner == request.user %}
+                <a class="ml-3 border btn btn-outline-success p-2 h-75" href="{% url 'profiles:add_store_branch' id=store_profile.id %}">Add a Branch</a>
+                {% endif %}
+               </div>
+               <hr class="mt-0 mb-4">
+               <div class="row  h-25 pt-1">
+                {% for branch in store_profile.branches.all %}
+                <div class="col-12 mb-3">
+                  <p>{{branch.branch_name}}
+                  {% if store_profile.owner == request.user %}
+                    <a class="border btn btn-outline-success mx-2 px-2 py-0" href="{% url 'profiles:update_branch' id=branch.id type='store' %}">update</a>
+                    {% if not branch.location %}
+                    <a class="border btn btn-outline-success mx-2 px-2 py-0" href="{% url 'profiles:add_location' id=branch.id type='store'%}">Add The Location</a>
+                    {% endif %}
+                    
+                  {% else %}
+                  {% if branch.location %}
+                  <a class="border btn btn-outline-success mx-2 px-2 py-0" href="{% url 'profiles:direction' id=branch.location.id %}">Direction</a>
+                  {% endif %}
+                  {% endif %}
+                  </p>
+                </div>
+                {% endfor %}
+                 
+              
+                {% comment %} <div class="col-6 mb-3">
+                  <h6>Phone</h6>
+                  <p class="text-muted">123 456 789</p>
+                </div> {% endcomment %}
+               </div>
+              {% endif %}
+              <div class="row pl-2">
+                <h3>Brands</h3>
+              </div>
+              <hr class="mt-0 mb-4">
+              <div class="row h-25 pt-1">
+                {% for brand in store_profile.brands.all %}
+                <div class="m-3">
+                  <p class="text-muted">{{brand.name}}</p>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="row pl-2">
+                <h3>categories</h3>
+              </div>
+              <hr class="mt-0 mb-4">
+              <div class="row h-25 pt-1">
+                {% for category in store_profile.categories.all %}
+                <div class="m-3">
+                  <p class="text-muted">{{category.name}}</p>
+                </div>
+                {% endfor %}
+              </div>
+            
+          </div>
+          {% if store_profile.branches_locations.count > 0 %}
+          <div class="col-md-5"> 
+            <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
+            <div id='map' class="border-left w-100" style='height:500px'></div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div> 
+  <h1>{{product_count}}</h1>
+  <div class="products products-grid mt-5 border-top">
+    {% if products_count > 0 %}
+    <div class="row">
+      <div class="breadcrumbs text-center w-100">
+        <div class="container w-100">
+          <h1>Our Products</h1>
+        </div>
+    </div>
+    {% elif  user == store_profile.owner %}
+      {% if store_profile.branches.all.count == 0 %}
+      <div class="row">
+        <div class="breadcrumbs text-center w-100">
+          <div class="container w-100">
+            <p>If You Want  To Add Products, <a href="{% url 'profiles:add_store_branch' id=store_profile.id %}" class="text-light">Add Some Branches First.</a></p>
+          </div>
+      </div>
+      {% else %}
+      <div class="row">
+        <div class="breadcrumbs text-center w-100">
+          <div class="container w-100">
+            <h1><a href="{% url 'products:add_product' %}" class="text-light">Add Some Products</a></h1>
+          </div>
+      </div>
+      {% endif %}
+    {% endif %}
+
+  
+    <div class="row row-sp row-eq-height p-5 w-100" id="products-container">
+      {% for branch in store_profile.branches.all %}
+        {% for product in branch.product_set.all %}
+        <div class="col-3 col-sm-4 col-md-4 col-lg-4 col-xl-3" id="product-col-{{product.id}}">
+            <div class="product-item">
+                <div class="product-image-action">
+                    <div class="product-image">
+                        <a href="{% url 'products:product_details' id=product.id %}">
+                            <img class="img-fluid blur-up lazyload" src="{{ product.part.image.url }}" data-src="{{ product.part.image.url }}" alt="image" title="image" />
+                            <img class="img-fluid blur-up lazyload product-imghover" src="{{ product.part.image.url }}" data-src="{{ product.part.image.url }}" alt="image" title="image" />
+                        </a>
+                    </div>
+                    {% comment %} <div class="product-counter clearfix" data-countdown="2024/10/01"></div> {% endcomment %}
+                    {% comment %} <div class="product-action">
+                        <ul>
+                          {% if store_profile.owner == request.user %}
+                            <li class="actions-addcrt" title="Edit"><a href="{% url 'products:update_product' id=product.id%}" class="btn" ><i class="ti-pencil-alt"></i></a></li>
+                            <li class="actions-addcart" title="Delete"><a data-toggle="modal" data-target="#delete-product-{{product.id}}" href="#" class="btn" ><i class="icon ti-trash"></i></a></li>
+                            {% else %}
+                            {% if product in  request.user.customerprofile.orderitemslist.products.all %}
+                            <li class="actions-addcart"data-toggle="tooltip" data-placement="top" title="add to Order"><a href="#open-addtocart-popup" class="disabled btn open-addtocart-popup" disabled><i class="icon ti-shopping-cart" disabled></i></a></li>
+            
+                            {% else %}
+                            <li class="order-btn-{{product.id}} actions-addcart" onclick="order('{{product.id}}')" data-placement="top" title="add to cart"><a href="#" class="btn open-addtocart-popup"><i class="icon ti-shopping-cart"></i></a></li>
+                            {% endif %}    
+                            <li class="actions-wishlist" data-toggle="tooltip" data-placement="top" title="add to wishlist"><a href="#open-wishlist-popup" class="btn open-wishlist-popup"><i class="icon ti-heart"></i></a></li>
+                          {% endif %}
+                        </ul>
+                    </div> {% endcomment %}
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title"><a href="{% url 'products:product_details' id=product.id %}">{{product.part}}</a></h3>
+                    <h4 class="product-vendor">
+                        <a href="{% url 'profiles:store_profile_details' store_profile=product.store.store %}">
+                        {{product.store.store}} Store
+                        </a>
+                    </h4>                                       
+                    <div class="product-starrating">
+                        {% for i in "xxxxx" %}  <!-- Loop to render 5 stars -->
+                            {% if forloop.counter <= product.average_rating %}  <!-- Display filled star if counter is less than or equal to rating -->
+                            <i class="spr-icon fa fa-star"></i>
+                            {% else %}  <!-- Display empty star if counter is greater than rating -->
+                            <i class="spr-icon fa fa-star-o"></i>                           
+                            {% endif %} 
+                        {% endfor %}
+                    </div>
+                    <div class="product-status">
+                      {{product.status}}
+                    </div>
+                    <div class="product-price">
+                        <span class="sale-price">{{product.price}}</span>
+                    </div>
+                    {% comment %} <div class="image-swatch-list">
+                        <ul class="d-flex flex-row justify-content-center align-items-center">
+                            <li class="active" data-toggle="tooltip" data-placement="top" title="xl"><img class="img-fluid" src="assets/images/products/product-1.jpg" alt="image" title="" /></li>
+                            <li data-toggle="tooltip" data-placement="top" title="x"><img class="img-fluid" src="assets/images/products/product-1.jpg" alt="image" title="" /></li>
+                            <li data-toggle="tooltip" data-placement="top" title="m"><img class="img-fluid" src="assets/images/products/product-1.jpg" alt="image" title="" /></li>
+                            <li data-toggle="tooltip" data-placement="top" title="s"><img class="img-fluid" src="assets/images/products/product-1.jpg" alt="image" title="" /></li>
+                        </ul>
+                    </div> {% endcomment %}
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="delete-product-{{product.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Delete a product</h5>    
+                </div>
+                <div class="modal-body ">
+                    <h2>Are want to delete {{product.part.name}}?</h2>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" obj-id={{product.id}} class="delete btn btn-primary">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endfor %}
+      {% if store_profile.owner == request.user %}
+      <div class="col-3 col-sm-4 col-md-4 col-lg-4 col-xl-3">
+        <div class="product-item p-5">
+          <p><a href="{% url 'products:add_product' %}"><img class="img-fluid"src="../../static/images/icons/add-new.png" alt="Add"></a></p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    
+  </div>
+
+  {% for branch in store_profile.branches.all %}
+    <div class="branches">
+      <input class="lat" type="text" value="{{branch.location.latitude}}" hidden>
+      <input class="longt" type="text" value="{{branch.location.longtitude}}" hidden>
+    </div>
+    
+  {% endfor %}
+  {{store_profile.branches.all.count|json_script:"branches_count"}}
+  
+
+  
+  <script>
+    var url = "{% url 'orders:add_order_item' %}";
+    var rating_url = "{% url 'stars_rating:business_rate_model' %}";
+    var delete_product_url = "{% url 'products:ajax-delete-product' %}";
+    var businessType = 'store';
+    var businessId = '{{store_profile.id}}';
+    var business_location = [
+      '{{store_profile.location.longtitude}}',
+      '{{store_profile.location.latitude}}'
+    ];
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="{% static 'orders/js/add_order.js' %}"></script>
+  <script src="{% static 'stars_rating/js/stars_rating.js' %}"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
+  
+    
+  <script src="{% static 'profiles/js/map.js' %}"></script>
+  <script src="{% static 'products/js/delete_product.js' %}"></script>
+{% endblock content %}

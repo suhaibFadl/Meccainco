@@ -1,0 +1,36 @@
+{% extends "regestration_base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} Make a Bussiness{% endblock title %}    
+
+{% block business_block %}
+
+<div class="container h-100" style=" background-color: hsl(26, 75%, 85%); ">
+    <div class="row justify-content-center pt-5" style="height: 15%">
+        <h1 class="mt-auto" style="font-size: 70px">Select A Bussiness</h1>
+    </div>
+    <div class="row" style="height: 85%">
+        <div class="col-md-6 col-12 d-flex flex-column align-items-center">
+            <div class="my-auto p-0">
+                <a class="d-flex flex-column align-items-center" href="{% url 'profiles:add_store_profile' %}">
+                <img class="w-50" src="..\..\static\images\icons\store.png" alt="store">
+                <h1>Autoparts Store</h1>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6 col-12 d-flex flex-column align-items-center">
+            <div class="my-auto p-0 ">
+                <a class="d-flex flex-column align-items-center" href="{% url 'profiles:add_workshop_profile' %}">
+                    <img  class="w-50" src="..\..\static\images\icons\workshop.png" alt="workshop">
+                    <h1>Workshop</h1>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock business_block %}
+

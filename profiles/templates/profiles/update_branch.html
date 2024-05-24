@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} Update Branch{% endblock title %}    
+
+{% block content %}
+<div class="breadcrumbs text-center">
+    <div class="container">
+        <h1>Update a Branch</h1>
+    </div>
+</div>
+<div class="create-account">
+    <div class="container">
+        <div class="row row-sp align-items-center">
+            <div class="col-sp col-12 col-sm-12 col-md-12 col-lg-12">
+                <form method="POST" id="personForm"  class="register-form needs-validation" novalidate enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row ">
+                        <div class="form-group col-md-6">
+                            {{ form.branch_name }}
+                            {% if form.is_bound and form.branch_name.value is not None %}
+                            {{ form.branch_name.errors }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group col-md-6 align-items-center">
+                            {{ form.phone_number }}
+                            {% if form.is_bound and form.phone_number.value is not None %}
+                            {{ form.phone_number.errors }}
+                            {% endif %}
+                            <div class="invalid-feedback">Please enter your Phone Number.</div>
+                        </div>
+                    </div>
+                   <div class="row justify-content-center">
+                    {% if branch.location == None %}
+                    <a class="btn btn-secondary w-50 m-3" href="{% url 'profiles:add_location' id=branch.id type=type%}">Add a Location</a>
+                    {% else %}
+                    <a class="btn btn-secondary w-50 m-3"  href="{% url 'profiles:update_location' id=branch.location.id %}">Update Location</a>
+                    {% endif %}
+                    <input type="submit" class="btn btn-primary w-50" value="Done">
+                   </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

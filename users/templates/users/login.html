@@ -1,0 +1,67 @@
+{% extends "regestration_base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} Add Product{% endblock title %}    
+
+{% block content %}
+<main class="main-content pt-5 d-flex align-items-center justify-content-center">
+<div class="login-account mt-5">
+    <div class="container">
+        <div class="row mb-5">
+        <a class="logo-img mx-auto"href="{% url 'products:index' %}"><img class="" src="..\..\static\images\Meccanico.png" style="" alt="Meccanico"></a>
+        </div>
+        <div class="row row-sp w-100">
+            <h1 class="col-12 text-center mb-5">Log In</h1>
+            <div class="col-sp col-12 col-sm-12 col-md-12">
+
+                <form method="post" id="personForm" class="login-form needs-validation" novalidate>
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+                    <div class="form-group">
+                        {% comment %} <label for="{{ form.username.id_for_label }}">Username *</label> {% endcomment %}
+                        {{ form.username }}
+                        {{ form.username.errors }}
+                        <div class="invalid-feedback">Please enter your username.</div>
+                    </div>
+                    <div class="form-group">
+                        {% comment %} <label for="{{ form.password.id_for_label }}">Password *</label> {% endcomment %}
+                        {{ form.password }}
+                        {{ form.password.errors }}
+                        <div class="invalid-feedback">Please enter your password.</div>
+                    </div>
+                  
+                    <div class="form-group button-action clearfix text-center">
+                        <div class="login-forget pull-left">
+                            <button type="submit" class="btn btn-primary">Log In</button>
+                        </div>
+                        <div class="account-create pull-right">
+                            <a class="btn btn-secondary" href="{% url 'users:register' %}">Create An Acoount</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+{% endblock content %}
+
+<h3>login</h3>
+
+{% comment %} <form action="" method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+        <p>{{ field.label }}: <br> {{ field }}</p>
+    {% endfor %}
+    <button type="submit">Login</button>
+</form> {% endcomment %}
+
+{% comment %} <p>Don't have an account? <a href="{% url 'users:register' %}">Signup here</a></p> {% endcomment %}
+

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} {% endblock title %}    
+
+{% block content %}
+    {% for part in parts %}
+    <a href="{% url 'parts:part_details' pk=part.pk %}">
+    <img src="{{ part.image.url }}" alt="">
+    {{part.name}}
+    {{part.car.company.name}}
+    {{part.car.name}}
+    </a>
+    {% endfor %}
+{% endblock content %}

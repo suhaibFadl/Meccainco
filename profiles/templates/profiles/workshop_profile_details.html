@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load static %}
+{% load ratings %}
+{% comment %} {% include 'orders/static/js/order.js' %} {% endcomment %}
+
+{% block scripts %}
+{% endblock scripts %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'stars_rating/css/style.css' %}">
+{% endblock css %}
+{% block title %}{{workshop_profile.name}}{% endblock title %}    
+
+{% block content %}
+<div class="row d-flex justify-content-center align-items-center h-100 overflow-hidden">
+  <div class="col w-100">
+    <div class="card mb-3 mx-5 " style="border-radius: .5rem;">
+      <div class="row g-0">
+        <div class="col-md-3
+          {% if workshop_profile.branches_locations.count == 0 %}
+          col-md-5
+          {% endif %} 
+          col-12 overflow-hidden gradient-custom text-center text-white"
+          style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+          <div class="row w-100 d-flex flex-column justify-content-center">
+            <img src="{{workshop_profile.logo.url}}"
+            alt="Avatar" class="img-fluid rounded-circle mx-auto my-5 w-50" />
+            <h2 class="mb-0">{{workshop_profile.name}}</h2>
+            <div class="">      
+              {% for i in "xxxxx" %}  <!-- Loop to render 5 stars -->
+                  {% if forloop.counter <= workshop_profile.average_rating %}  <!-- Display filled star if counter is less than or equal to rating -->
+                  <i class="spr-icon fa fa-star"></i>
+                  {% else %}  <!-- Display empty star if counter is greater than rating -->
+                  <i class="spr-icon fa fa-star-o"></i>                           
+                  {% endif %} 
+              {% endfor %}
+            </div>        
+            <h4  class="m-3">{{workshop_profile.bio}}</h4>
+            {% if workshop_profile.owner != request.user %}
+              <p><a href="{% url 'inboxes:chat'  id=workshop_profile.inbox.id type=1 %}" class="badge badge-light">Contact Us  <i style="font-size:15px" class="icon ti-email"></i></a></p>
+              {% else %}
+                <p><a href="{% url 'profiles:update_workshop_profile' %}" class="btn btn-outline-light border-light mt-2 py-0 px-1">Update a Workshop</a></p>
+              {% endif %}
+          </div>
+        </div>
+        <div class=" col-md-4
+          {% if workshop_profile.branches_locations.count == 0 %}
+            col-md-7
+          {% endif %}
+           col-12">
+          <div class="card-body mt-5 h-100 p-4">
+           {% if workshop_profile.branches.all %}
+           <div class="row">
+            <h3>Our Branches</h3>
+            {% if workshop_profile.owner == request.user %}
+            <a class="ml-3 border btn btn-outline-success p-2 h-75" href="{% url 'profiles:add_workshop_branch' id=workshop_profile.id %}">Add A Branch</a>
+            {% endif %}
+           </div>
+           <hr class="mt-0 mb-4">
+           <div class="row  h-25 pt-1">
+            {% for branch in workshop_profile.branches.all %}
+            {% comment %} <div class="branches">
+              <input class="lat" type="text" value="{{branch.location.latitude}}" hidden>
+              <input class="longt" type="text" value="{{branch.location.longtitude}}" hidden>
+            </div> {% endcomment %}
+            <div class="col-12 mb-3">
+              <p>{{branch.branch_name}}
+              {% if workshop_profile.owner == request.user %}
+                <a class="border btn btn-outline-success mx-2 px-2 py-0" href="{% url 'profiles:update_branch' id=branch.id type='workshop' %}">update</a>
+                  {% if not branch.location %}
+                  <a class="border btn btn-outline-success mx-2 px-2 py-0" href="{% url 'profiles:add_location' id=branch.id type='workshop'%}">Add The Location</a>
+                  {% endif %}
+                {% else %}
+                {% if branch.location %}
+                 <a class="border btn btn-outline-success mx-2 px-2 py-0" href="{% url 'profiles:direction' id=branch.location.id %}">Direction</a>
+                {% endif %}
+                 {% if can_request %}
+                  <a class="border btn btn-outline-success mx-2 px-2 py-0" href="{% url 'orders:request_reservation' id=branch.id %}">Request a reservation</a>
+                {% endif %}
+              {% endif %}
+              </p>
+            </div>
+              {% endfor %}
+           </div>
+           {% elif workshop_profile.owner == request.user%}
+           <div class="row mb-5">
+            <h3>Add Branches</h3>
+            
+            <a class="ml-3 border btn btn-outline-success p-2 h-75" href="{% url 'profiles:add_workshop_branch' id=workshop_profile.id %}">Add A Branch</a>
+        
+           </div>
+           {% endif %} 
+           <div class="row">
+              <h3>Brands</h3>
+            </div>
+            <hr class="mt-0 mb-4">
+            <div class="row h-25 pt-1">
+              {% for brand in workshop_profile.brands.all %}
+                <p class="text-muted m-3">{{brand.name}}</p>
+              {% endfor %}
+             
+            </div>
+            
+           <div class="row">
+            <h3>Categories</h3>
+           </div>
+           <hr class="mt-0 mb-4">
+            <div class="row h-25 pt-1 mb-5">
+              {% for category in workshop_profile.categories.all %}
+                <p class="text-muted m-3">{{category.name}}</p>
+              {% endfor %}
+             
+            </div>
+          </div>
+        </div>
+        {% if workshop_profile.branches_locations.count > 0 %}
+        <div class="col-md-5"> 
+          <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
+          <div id='map' class="border-left w-100" style='height:500px'></div>
+        </div>
+        {% endif %}
+      
+      </div>
+    </div>
+  </div>
+</div>
+{% for branch in workshop_profile.branches.all %}
+  <div class="branches">
+    <input class="lat" type="text" value="{{branch.location.latitude}}" hidden>
+    <input class="longt" type="text" value="{{branch.location.longtitude}}" hidden>
+  </div>
+{% endfor %}
+  {{workshop_profile.branches.all.count|json_script:"branches_count"}}
+  
+  <script>
+    //var url = "{% url 'orders:add_order_item' %}";
+    var rating_url = "{% url 'stars_rating:business_rate_model' %}";
+    var businessId = '{{workshop_profile.id}}';
+    var businessType = 'workshop';
+    var business_location = [
+      '{{workshop_profile.location.longtitude}}',
+      '{{workshop_profile.location.latitude}}'
+    ];
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  {% comment %} <script src="{% static 'orders/js/add_order.js' %}"></script> {% endcomment %}
+  <script src="{% static 'stars_rating/js/stars_rating.js' %}"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
+  
+  <script src="{% static 'profiles/js/map.js' %}"></script>
+  <script src="{% static 'orders/js/reservations.js' %}"></script>
+
+{% endblock content %}

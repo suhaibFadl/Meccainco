@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} {{brand.name}}{% endblock title %}    
+
+{% block content %}
+{% if stores %}
+<div class="popular-product sections-spacing mt-5">
+    <div class="container border-bottom">
+        <div class="title-btn clearfix">
+            <div class="section-header class='pl-5'">
+                <h2>Stores</h2>
+                <p>Browse the huge variety of our products</p>
+            </div>
+            <div class="viewall-btn top-btn">
+                <a href="{% url 'products:brand_stores_details' brand=brand.name%}" class="btn btn-secondary">View all</a>
+            </div>
+        </div>
+        <div class="row row-sp row-eq-height">
+        {% for store in stores %}
+            <div class="col-sp col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="product-item">
+                    <div class="product-image-action">
+                        <div class="product-image">
+                            <a href="{% url 'profiles:store_profile_details' store_profile=store.name %}">
+                                <img class="img-fluid blur-up lazyload" src="{{ store.logo.url }}" data-src="{{ store.logo.url }}" alt="image" title="image" />
+                                <img class="img-fluid blur-up lazyload product-imghover" src="{{ store.logo.url }}" data-src="{{ store.logo.url }}" alt="image" title="image" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title"><a href="{% url 'profiles:store_profile_details' store_profile=store.name %}">{{store.name}}</a></h3>
+                        <h4 class="product-vendor">{{workshop.bio}}</h4>   
+                        <div class="product-starrating">      
+                            {% for i in "xxxxx" %}  <!-- Loop to render 5 stars -->
+                                {% if forloop.counter <= store.average_rating %}  <!-- Display filled star if counter is less than or equal to rating -->
+                                <i class="spr-icon fa fa-star"></i>
+                                {% else %}  <!-- Display empty star if counter is greater than rating -->
+                                <i class="spr-icon fa fa-star-o"></i>                           
+                                {% endif %} 
+                            {% endfor %}
+                        </div>                                
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if workshops %}
+<div class="popular-product sections-spacing mt-5">
+    <div class="container border-bottom">
+        <div class="title-btn clearfix">
+            <div class="section-header class='pl-5'">
+                <h2 >Workshops</h2>
+                <p>Browse the huge variety of our products</p>
+            </div>
+            <div class="viewall-btn top-btn">
+                <a href="{% url 'products:brand_workshops_details' brand=brand.name %}" class="btn btn-secondary">View all</a>
+            </div>
+        </div>
+        <div class="row row-sp row-eq-height">
+        {% for workshop in workshops %}
+            <div class="col-sp col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="product-item">
+                    <div class="product-image-action">
+                        {% comment %} <div class="product-label">
+                            <span class="label new">New</span>
+                            <span class="label sale">Sale</span>
+                        </div> {% endcomment %}
+                        <div class="product-image">
+                            <a href="{% url 'profiles:workshop_profile_details' workshop_profile=workshop.name %}">
+                                <img class="img-fluid blur-up lazyload" src="{{ workshop.logo.url }}" data-src="{{ workshop.logo.url }}" alt="image" title="image" />
+                                <img class="img-fluid blur-up lazyload product-imghover" src="{{ workshop.logo.url }}" data-src="{{ workshop.logo.url }}" alt="image" title="image" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title"><a href="{% url 'profiles:workshop_profile_details' workshop_profile=workshop.name %}">{{workshop.name}}</a></h3>
+                        <h4 class="product-vendor">Posh Auto Parts</h4>   
+                        <div class="product-starrating">      
+                            {% for i in "xxxxx" %}  <!-- Loop to render 5 stars -->
+                                {% if forloop.counter <= workshop.average_rating %}  <!-- Display filled star if counter is less than or equal to rating -->
+                                <i class="spr-icon fa fa-star"></i>
+                                {% else %}  <!-- Display empty star if counter is greater than rating -->
+                                <i class="spr-icon fa fa-star-o"></i>                           
+                                {% endif %} 
+                            {% endfor %}
+                        </div>                                
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+          
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="popular-product sections-spacing mt-5">
+    <div class="container border-bottom">
+        <div class="title-btn clearfix">
+            <div class="section-header">
+                <h2 >Categories</h2>
+                <p>Browse the huge variety of our products</p>
+            </div>
+        </div>
+        <div class="row row-sp row-eq-height">
+        {% for category in categories %}
+            <div class="col-sp col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="product-item border-0 m-5">
+                    <div class="product-image-action">
+                        {% comment %} <div class="product-label">
+                            <span class="label new">New</span>
+                            <span class="label sale">Sale</span>
+                        </div> {% endcomment %}
+                        <div class="product-image">
+                            <a href="{% url 'products:brand_categories_details' brand=brand.name category=category.name %}">
+                                <img class="img-fluid blur-up lazyload" src="{{ category.logo.url }}" data-src="{{ category.logo.url }}" alt="image" title="image" />
+                                <img class="img-fluid blur-up lazyload product-imghover" src="{{ category.logo.url }}" data-src="{{ category.logo.url }}" alt="image" title="image" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title"><a href="{% url 'products:brand_categories_details' brand=brand.name category=category.name %}">{{category.name}}</a></h3>                      
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    
+        </div>
+    </div>
+</div>
+{% endblock content %}

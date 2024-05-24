@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %}{{parts.category.name}}{% endblock title %}    
+
+{% block content %}
+{% for brand in brands %}
+<a href="{% url 'parts:brand_details' brand=brand.name %}">
+{{brand.name}}
+ </a>
+{% endfor %}
+{% endblock content %}

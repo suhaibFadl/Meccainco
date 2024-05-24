@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'orders/css/filter-style.css' %}">
+{% endblock css %}
+
+{% comment %} {% block scripts %}
+<script src="{% static 'orders/js/orders_filter.js'}"></script>
+{% endblock scripts %} {% endcomment %}
+
+{% block title %}Store Orders{% endblock title %}    
+
+{% block content %}
+<div class="my-account-content">
+    <div class="container">
+        <div class="account-inner-info">
+            <div class="row">
+                <!-- Start My Account Nav -->
+                <div class="account-nav mb-5 mb-sm-0 col-12 col-sm-3 col-md-3">
+                    <div class="nav flex-row flex-sm-nowrap flex-sm-column nav-pills" id="v-pills-tab" role="tablist">
+                        <a class="nav-link active" onclick="filterSelection('all')" href="#" data-toggle="pill" role="tab">All</a>
+                        <a class="nav-link" onclick="filterSelection('Waiting')" href="#" role="tab"  aria-selected="false">Waiting</a>
+                        <a class="nav-link" onclick="filterSelection('In Progress')" href="#" role="tab"  aria-selected="false">In Progress</a>
+                        <a class="nav-link" onclick="filterSelection('En Route')" href="#" role="tab" data-toggle="pill" aria-selected="false">En Route</a>
+                        <a class="nav-link" onclick="filterSelection('Delivered')" href="#" role="tab" data-toggle="pill" aria-selected="false">Delivered</a>
+                        <a class="nav-link" onclick="filterSelection('Store Canceled')" href="#" role="tab" data-toggle="pill" aria-selected="false">Store Canceled</a>
+                        <a class="nav-link" onclick="filterSelection('Customer Canceled')" href="#" role="tab" data-toggle="pill" aria-selected="false">Customer Canceled</a>
+                        <a class="nav-link" onclick="filterSelection('Product Unavailable')" href="#" role="tab" data-toggle="pill" aria-selected="false">Product Unavailable</a>
+                    </div>
+                </div>
+                <!-- End My Account Nav -->
+
+                <!-- Start My Account Details -->
+                <div class="account-details col-12 col-sm-9 col-md-9">
+                    <div class="tab-content" id="account-tabContent">
+                      <!-- Start Dashboard -->
+                        {% for order in orders %}
+                        <div class="filterDiv {{ order.get_status_display}} w-75 mb-5">
+                            <div class="card shadow-sm">                          
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <a class="col-4" href="#"><b>{{order.customer}}</b></a>
+                                        <div class="col4"><span class="badge status-{{order.status}}"><h5 class="m-0"><b>{{ order.get_status_display}}</b></h5></span></div>
+                                    </div>
+                                    <p class="card-text">Total = {{order.total}}</p>
+                                    <a  class="btn btn-outline-primary px-5 py-2" href="{% url 'orders:store_order' id=order.id %}">Details</a>
+                                </div>
+                            </div>                    
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+                <!-- End My Account Details -->
+            </div>
+        </div>
+    </div>
+</div>
+     
+    <script>
+        var store_id = {{user.storeprofile.id}};
+        console.log(store_id);
+    </script>
+    <script src="{% static 'orders/js/append_order.js' %}"></script>
+    <script src="{% static 'orders/js/orders_filter.js' %}"></script>
+{% endblock content %}

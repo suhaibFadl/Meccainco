@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} Add Product{% endblock title %}    
+
+{% block content %}
+<div class="container">
+  <div class="row row-sp align-items-center">
+      <div class="col-sp col-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="page-title text-center mb-5">
+             <h1>Add a new Product</h1>
+          </div>
+          <form method="POST" id="personForm"  data-parts-url="{% url 'products:ajax_load_parts' %}" class="register-form needs-validation" novalidate enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="container  w-50">
+                <div class="form-group row mb-4">
+                    <label for="{{ form.store.id_for_label }}">Branch *</label>
+                    {{ form.store }}
+                    <div class="invalid-feedback">Please select a branch.</div>
+                </div>
+                <div class="form-group row mb-4">
+                    <label for="{{ form.brand.id_for_label }}">Brand *</label>
+                    {{ form.brand }}
+                    <div class="invalid-feedback">Please select a brand.</div>
+                </div>
+                <div class="form-group row mb-4">
+                    <label for="{{ form.brand.id_for_label }}">Car *</label>
+                    {{ form.car }}
+                    <div class="invalid-feedback">Please select a car.</div>
+                </div>
+                <div class="form-group row mb-4">
+                    <label for="{{ form.category.id_for_label }}">Category *</label>
+                    {{ form.category }}
+                    <div class="invalid-feedback">Please select a category.</div>
+                </div>
+                <div class="form-group row align-items-center mb-4">
+                    <label for="{{ form.part.id_for_label }}"> Part *</label>
+                    {{ form.part }}
+                    <div class="invalid-feedback">Please select a part.</div>
+                </div>
+                <div class="form-group row align-items-center mb-4">
+                    <label for="{{ form.status.id_for_label }}"> Status *</label>
+                    {{ form.status }}
+                    <div class="invalid-feedback">Please select a part status.</div>
+                </div>
+                <div class="form-group row align-items-center mb-4">
+                    <label for="{{ form.price.id_for_label }}">Price *</label>
+                    {{ form.price }}
+                    <div class="invalid-feedback">Please enter a price.</div>
+                </div>
+                <div class="form-group row align-items-center mb-4">
+                    <label for="{{ form.max_quantity.id_for_label }}">Max Quantity *</label>
+                    {{ form.max_quantity }}
+                    <div class="invalid-feedback">Please enter a max quantity a customer can order.</div>
+                </div>
+                <div class="form-group row align-items-center mb-4">
+                    <label for="{{ form.max_quantity.id_for_label }}">Min Quantity *</label>
+                    {{ form.min_quantity }}
+                    <div class="invalid-feedback">Please enter a min quantity a customer can order.</div>
+                </div>
+                <div class="form-group row align-items-center mb-4" style=" display: none;">
+                    <label for="{{ form.is_available.id_for_label }}">Is Available {{ form.is_available }}</label>
+                </div>
+                <input  class="row mx-auto w-100 btn btn-primary" type="submit" value="Submit">
+            </div>
+          </form>
+      </div>
+  </div>
+</div>
+{% comment %} <form method="POST" id="personForm" data-parts-url="{% url 'products:ajax_load_parts' %}" novalidate enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form> {% endcomment %}
+
+<script>
+    $("#id_brand").change(function () {
+      var url = "{% url 'products:ajax_load_cars' %}";  // get the url of the `load_cities` view
+      console.log(url);
+      var brandId = $(this).val();  // get the selected country ID from the HTML input
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'brand': brandId       // add the country id to the GET parameters
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          var options = '<option value="">---------</option>'
+          console.log(data.cars)
+        
+          for(var key in data.cars) {
+              options += `<option value="${data.cars[key]['id']}">${data.cars[key]['name']}-${data.cars[key]['year']}</option>`
+      
+             
+          }
+          $("#id_car").html(options);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+    $("#id_category").change(function () {
+      var url = $("#personForm").attr("data-parts-url");  // get the url of the `load_cities` view
+      console.log(url);
+      var categoryId = $(this).val();  // get the selected country ID from the HTML input
+      console.log("ID:",categoryId);
+      console.log("ID:",$(this));
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'category': categoryId       // add the country id to the GET parameters
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#id_part").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+  </script>
+
+{% endblock content %}

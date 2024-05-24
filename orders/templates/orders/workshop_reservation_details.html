@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %}{{reservation.customer}} Reservation{% endblock title %} 
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'orders/css/filter-style.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+<link rel="stylesheet" href="{% static 'orders/css/order-bar.css' %}">
+{% endblock css %}
+{% block content %}
+<div class="container-md">
+        <div class="card shadow-sm">                          
+            <div class="card-body pl-5">
+                <div class="row mb-5">
+                        <div class="col-lg-4 col-md-8 col-12 d-flex justify-content-center mx-auto">
+                                <img src="{{reservation.customer.image.url}}" alt="Avatar" class="img-fluid rounded-circle mx-auto p-5" />
+                        </div>
+                        <div class="col-md-8 col-12 d-flex flex-column pt-5 mx-auto">
+                                <h3 class="mt-5 mb-0 mx-lg-0 mx-auto ">
+                                <a class="col-sm-6 col-4 p-0 mb-0" href="{% url 'profiles:workshop_profile_details' workshop_profile=reservation.workshop.workshop.name %}">
+                                        <a  href="{% url 'inboxes:chat'  id=reservation.customer.inbox.id type=3 %}"><i class="icon ti-email m-1" style="font-size:15px"></i></a><a href="#">{{ order.customer}}</a>
+                                        <b>{{reservation.customer}}</b></a>
+                                </h3>
+                                <p class="mb-5"><small><i class="icon ti-mobile m-0" style="font-size:17px"></i>{{reservation.customer.phone_num}}</small></p>         
+
+                                <p><b>Car: </b> {{reservation.car}}</p>
+                                <p><b>Categories: </b> 
+                                        {% for category in reservation.categories.all %}
+                                                {{category}} 
+                                        {% endfor %}
+                                </p>
+                                {% if reservation.status > 1 %}
+                                <p class="card-text"><b>Time:</b> {{reservation.time}}</p>
+                                {% endif %}
+                                <p class="card-text">
+                                        {% if reservation.note != '' %}
+                                        <a class="pr-3" href="#" data-toggle="modal" data-target="#customer-notes"><i class="icon ti-notepad"></i>Customer Notes</a>
+                                        {% endif %}
+                                        {% if reservation.images.all.count > 0 %}
+                                        <a class="pl-3" href="#" data-toggle="modal" data-target="#car-images"><i class="icon ti-gallery"></i>Car Images</a>
+                                        {% endif %}
+                                </p>
+                        </div>
+                </div>
+       
+                {% if reservation.status == 1 %}
+                <div class="form-group row w-25 datetime-inputs mx-auto justify-content-center">
+                        <label for="newTime" class="form-label">Pick a reservation time:</label>
+                         <!-- Date input -->
+                                <input type="date" name="newDate" id="newDate" class="form-control">
+
+                                <!-- Time input with arrows -->
+                                <div class="time-picker m-2">
+                                        <input type="time" id="newTime" name="newTime" class="form-control" value="12:00">
+                                </div>
+                                    
+                                <b><p id="datetimeError" class="form-text text-danger"><//polyfill.io/v3/polyfill.min.js></b>
+                </div>
+                {% endif %}
+                {% if reservation.status > 2 and reservation.status < 7 %}
+                <div class="row">
+                        <div id="order-bar" class="container px-1 px-md-4 py-5 mx-auto w-100">
+                                <div class="card border-0">
+                                        {% comment %} <div class="row d-flex justify-content-between px-3 top">
+                                        <div class="d-flex">
+                                                <h5>ORDER <span class="text-primary font-weight-bold">#Y34XDHR</span></h5>
+                                        </div>
+                                        <div class="d-flex flex-column text-sm-right">
+                                                <p class="mb-0">Expected Arrival <span>01/12/19</span></p>
+                                                <p>USPS <span class="font-weight-bold">234094567242423422898</span></p>
+                                        </div>
+                                        </div> {% endcomment %}
+                                        <!-- Add class 'active' to progress -->
+                                        <div class="row d-flex justify-content-center">
+                                        <div class="col-12">
+                                        <ul id="progressbar" class="text-center">
+                                                        {% for i in "3456" %}  <!-- Loop to render 5 stars -->
+                                                                {% if i|stringformat:"s" <= reservation.status|stringformat:"s" %}
+                                                                <li class="active step0"></li>
+                                                                {% else %}
+                                                                <li class="step0"></li>
+                                                                {% endif %}
+                                                        {% endfor %}
+                                        </ul>
+                                        </div>
+                                        </div>
+                                        <div class="row w-100 m-0 ">
+                                                <div class="col-3 w d-flex flex-column icon-content justify-content-center">
+                                                        <img class="icon mx-auto" src="../../static/images/icons/quality.png">
+                                                        <div class="row d-flex flex-column mx-auto">
+                                                        <p class="font-weight-bold mx-auto"><br>Confirmed</p>
+                                                        </div>
+                                                </div>
+                                                <div class="col-3  icon-content  d-flex flex-column">
+                                                        <img class="icon mx-auto" src="../../static/images/icons/garage.png" >
+                                                        <div class="d-flex flex-column mx-auto">
+                                                        <p class="font-weight-bold"><br>In Garage</p>
+                                                        </div>
+                                                </div>
+                                                <div class="col-3 icon-content d-flex flex-column">
+                                                        <img class="icon mx-auto" src="../../static/images/icons/car.png">
+                                                        <div class="d-flex flex-column mx-auto">
+                                                        <p class="font-weight-bold"><br>Under The Maintenance</p>
+                                                        </div>
+                                                </div>
+                                                <div class="col-3 icon-content d-flex flex-column">
+                                                        <img class="icon mx-auto" src="../../static/images/icons/check-up.png">
+                                                        <div class="d-flex flex-column mx-auto">
+                                                        <p class="font-weight-bold"><br>Fixed</p>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+                {% endif %}
+
+                {% if reservation.status == 7 %}
+                <div class="row mx-1 justify-content-center p-3">
+                        <button class="btn btn-danger  col-lg-5 col-12 m-2" disabled>Customer Canceled</button>
+                </div>
+                {% elif reservation.status == 8 %}
+                <div class="row mx-1 justify-content-center p-3">
+                        <button class="btn btn-danger  col-lg-5 col-12 m-2" disabled>Workshop Canceled</button>
+                </div>
+                {% elif reservation.status == 9 %}
+                <div class="row mx-1 justify-content-center p-3">
+                        <button class="btn btn-danger  col-lg-5 col-12 m-2" disabled >Expired</button>
+                </div>
+                {% endif %}
+
+                {% if reservation.status < 6 %}
+                <div class="row mx-1 justify-content-center p-3">
+                        <div class="col-8">
+                               <div class="row justify-content-center">
+                                {% if reservation.status == 1 %}
+                                <button id="confirmButton" class="btn btn-primary btn btn-primary col-lg-5 col-12 m-2">Confirm</button>
+                                {% elif reservation.status == 3%}
+                                <button onclick="update_reservation(4)"class="btn btn-primary btn btn-primary col-lg-5 col-12 m-2">Car In the Garage</button>
+                                {% elif reservation.status == 4%}
+                                <button onclick="update_reservation(5)"" class="btn btn-primary btn btn-primary col-lg-5 col-12 m-2">Car Under The Maintanence</button>
+                                {% elif reservation.status == 5%}
+                                <button onclick="update_reservation(6)" class="btn btn-primary btn btn-primary col-lg-5 col-12 m-2">Fixed</button>
+                               {% endif %}
+                                <button class="btn btn-secondary  col-lg-5 col-12 m-2" onclick="update_reservation(7)">Cancel</button>
+                               </div>
+                        </div>
+                </div>
+                {% endif %}
+              
+            </div>
+        </div>                    
+</div>
+
+<div class="modal fade" id="customer-notes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{reservation.customer}} Notes</h5>
+                </div>
+                <div class="modal-body">
+                    {{reservation.note}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+</div>
+<div class="modal fade" id="car-images" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{reservation.car}} Images</h5>
+                </div>
+                <div class="modal-body">
+                        <div class="row w-75 mx-auto">
+                                <div id="carouselExampleCaptions" class="carousel slide w-100" data-ride="carousel">
+                                        <ol class="carousel-indicators">
+                                        {% for image in reservation.images.all %}
+                                                <li data-target="#carouselExampleCaptions" data-slide-to="{{forloop.counter}}" class="{% if forloop.counter == 1 %}active{% endif %}"></li>
+                                        {% endfor %}
+                                        </ol>
+        
+                                        <div class="carousel-inner w-100">
+                                                {% for image in reservation.images.all %}
+                                                <div class="carousel-item w-100 {% if forloop.counter == 1 %}active{% endif %}" >
+                                                        <img src="{{image.image.url}}" class="d-block w-100" alt="...">
+                                                </div>
+                                                {% endfor %}
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-target="#carouselExampleCaptions" data-slide="prev">
+                                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                          <span class="sr-only">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-target="#carouselExampleCaptions" data-slide="next">
+                                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                          <span class="sr-only">Next</span>
+                                        </button>
+                                </div>
+                        </div> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+</div>
+    
+
+        <script>
+                var confirm_reservation_url = "{% url 'orders:confirm_reservation' %}";
+                var update_reservation_url = "{% url 'orders:update_reservation' %}";
+                var reservationId = '{{reservation.id}}';
+        </script>
+        <script src="{% static 'orders/js/reservations.js' %}"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+{% endblock content %}

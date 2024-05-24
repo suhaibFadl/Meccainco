@@ -1,0 +1,601 @@
+{% load static %}
+<!doctype html>
+<html class="no-js h-100" lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content=" " />
+    
+    <!-- Favicon  -->
+    <link rel="shortcut icon" href="{% static 'images/fevicon.png' %}" />
+
+    <!-- *********** CSS Files *********** -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="{% static 'css/plugins.css' %}" />
+    <!-- Styles CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}" /> 
+
+    {% block css %}
+    
+    {% endblock css %}    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />  
+    <!-- Required meta tags -->
+    
+    
+    {% block maps %}
+   
+    {% endblock maps %}
+    
+    
+    <!-- Custom css -->
+    {% comment %} <link rel="stylesheet" href="{% static 'style.css' %}"> {% endcomment %}
+
+    <!-- dropzone -->
+    {% comment %} <link rel="stylesheet" href="{% static 'dropzone.css' %}"> {% endcomment %}
+    {% comment %} <script src="{% static 'dropzone.js' %}" defer></script> {% endcomment %}
+
+    <!-- Custom js -->
+    <script src="{% static 'functions.js' %}" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% comment %} google-maps {% endcomment %}
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    {% comment %} <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> {% endcomment %}
+    {% block scripts %}
+
+    {% endblock scripts %}
+
+    <title>Meccanico | {% block title %}{% endblock title %}</title>
+    
+  </head>
+  <body class="template-index home-version-3 h-100">
+    <header class="header bg-white">
+      <!-- Start Main Header -->
+      <div class="main-header shadow-bottom">
+          <div class="container">
+              <div class="d-flex justify-content-between align-items-center logo-right-menu">
+                  <!-- Start Logo -->
+                  <div class="col-3 col-sm-3 col-md-2 col-lg-2 navbar-brand logo p-0 m-0">
+                      <!-- Start Sticky Menu Toggle -->
+                      <button class="sticky-menu-button d-none" type="button"><span class="icon ti-menu"></span><span class="d-none menu-text">Menu</span></button> 
+                      <!-- End Sticky Menu Toggle -->
+
+                      {% comment %} <a href="index-v3.html" class="logo-img"><img class="img-fluid" src="assets/images/logo/logo.png" alt="logo" title="Posh Auto Parts" /></a> {% endcomment %}
+                      <a class="logo-img"href="{% url 'products:index' %}"><h1>Meccanico</h1></a>
+                  </div>
+                  <!-- End Logo -->
+
+                  <!-- Start Right Menu -->
+                  <div class="col-9 col-sm-9 col-md-10 col-lg-10 p-0 right-side">
+                      <div class="d-flex flex-row-reverse align-items-center right-side-menu">
+                          <!-- Start Menu Toggle -->
+                          <button class="navbar-toggler d-block d-lg-none" type="button" data-toggle="collapse" data-target="#navbar-collapse"><span class="icon ti-menu"></span><span class="d-none menu-text">Menu</span></button> 
+                          <!-- End Menu Toggle -->
+                          {% if user.is_authenticated %}
+                          <!-- Start Minicart -->
+                          <div class="minicart minicart-v2 float-right">
+                              <a href="#" class="cart-btns" title="Cart">
+                                  <i class="icon ti-shopping-cart"></i>
+                                  {% comment %} <div class="cart-count"><span id="count">2</span></div> {% endcomment %}
+                                  <span class="cart-text">My Servicess </span>
+                              </a>
+
+                              <div class="minicart-toggle-popup">
+                                <div class="row-4">
+                                    <div class=" list-group  list-group-horizontal" id="list-tab" role="tablist">
+                                      <a class="list-group-item list-group-item-action active" id="list-orders-list" data-toggle="list" href="#list-orders" role="tab" aria-controls="orders">Orders</a>
+                                      <a class="list-group-item list-group-item-action" id="list-reservations-list" data-toggle="list" href="#list-reservations" role="tab" aria-controls="reservations">Reservations</a>
+                                    </div>
+                                  </div>
+                                  <div class="row-8">
+                                    <div class="tab-content" id="nav-tabContent">
+                                      <div class="tab-pane fade show active" id="list-orders" role="tabpanel" aria-labelledby="list-orders-list">
+                                          <div class="minicart-details">
+                                              {% if  request.user.customerprofile.active_orders == 0 %}
+                                              <div class="empty-cart"><p>You have no Orders.</p></div>                                      
+                                              {% else %}                                              
+                                              <ul class="cart-lists clearfix">
+                                                {% for order in request.user.customerprofile.order_set.all %}
+                                                      {% comment %} {% if order.status < 4 %} {% endcomment %}
+                                                        <!-- Display order details -->
+                                                        <li class="cart-item d-table">
+                                                            <div class="pro-img d-table-cell align-middle">
+                                                                
+                                                                <a href="{% url 'profiles:store_profile_details' store_profile=order.store.name %}">
+                                                                    <img class="img-fluid blur-up lazyload" src="{{ order.store.logo.url }}" data-src="{{ order.store.logo.url }}" alt="image" title="Donec pede justo fringilla" />
+                                                                </a>
+                                                            </div>
+                                                            <div class="item-info pl-4 text-left d-table-cell align-top">
+                                                                <a href="{% url 'profiles:store_profile_details' store_profile=order.store.name %}">{{order.store}}</a>
+                                                                <p class="size-color">{{ order.get_status_display}}</p>
+                                                                <p class="price">${{order.total}}</p>
+                                                            </div>
+                                                            <div class="item-right cart-remove d-table-cell align-middle">
+                                                                <a class="edit mr-2" href="{% url 'orders:order' id=order.id %}"><i class="ti-pencil-alt"></i></a>
+                                                            </div>
+                                                        </li>
+                                                    {% comment %} {% endif %}                                             {% endcomment %}
+                                                {% endfor %}
+                                              </ul> 
+                                              {% endif %}                                                           
+                                          </div>
+                                          <div class="minicart-bottom-actions cleatfix">
+                                                <div class="actions d-inline-block w-100 text-center">
+                                                  <a class="btn btn-primary d-block mb-4 font-sm-14 {% if request.user.customerprofile.active_orders == 0 %}disabled{% endif %} " href="{% url 'orders:my_orders' %}">View Orders</a>
+                                              </div>
+                                          </div>    
+                                      </div>
+                                      <div class="tab-pane fade" id="list-reservations" role="tabpanel" aria-labelledby="list-reservations-list">
+                                        <div class="minicart-details">                                        
+                                            {% if  request.user.customerprofile.workshopreservation_set.all > 0 %}
+                                            <div class="empty-cart"><p>You have no reservations.</p></div>                                      
+                                            {% else %}                                              
+                                            <ul class="cart-lists clearfix">
+                                              {% for reservation in request.user.customerprofile.workshopreservation_set.all %}
+                           
+                                              {% if reservation.status < 6 %}
+                                                
+                                                      <!-- Display order details -->
+                                                      <li class="cart-item d-table">
+                                                          <div class="pro-img d-table-cell align-middle">
+                                                              
+                                                              <a href="{% url 'profiles:workshop_profile_details' workshop_profile=reservation.workshop.workshop.name %}">
+                                                                  <img class="img-fluid blur-up lazyload" src="{{ reservation.workshop.workshop.logo.url }}" data-src="{{ reservation.workshop.workshop.logo.url }}" alt="image" title="Donec pede justo fringilla" />
+                                                              </a>
+                                                          </div>
+                                                          <div class="item-info pl-4 text-left d-table-cell align-top">
+                                                              <a href="{% url 'profiles:workshop_profile_details' workshop_profile=reservation.workshop.workshop.name %}">{{reservation.workshop.workshop}}</a>
+                                                              <p class="size-color">{{ reservation.get_status_display}}</p>                                                              
+                                                          </div>
+                                                          <div class="item-right cart-remove d-table-cell align-middle">
+                                                              <a class="edit mr-2" href="{% url 'orders:customer_reservation' id=reservation.id %}"><i class="ti-pencil-alt"></i></a>
+                                                          </div>
+                                                      </li>
+                                                  {% endif %}                                            
+                                              {% endfor %}
+                                            </ul> 
+                                            {% endif %}                                                           
+                                        </div>
+                                        <div class="minicart-bottom-actions cleatfix">
+                                              <div class="actions d-inline-block w-100 text-center">
+                                                <a class="btn btn-primary d-block mb-4 font-sm-14 {% if request.user.customerprofile.active_reservations == 0 %}disabled{% endif %} " href="{% url 'orders:customer_reservations' %}">View Reservations</a>
+                                            </div>
+                                        </div> 
+                                      </div>
+                                      
+                                    </div>
+                                  </div>
+                                  {% comment %} <div class="minicart-details">                                           
+                                      {% if  request.user.customerprofile.active_orders == 0 %}
+                                      <div class="empty-cart"><p>You have no Orders.</p></div>                                      
+                                      {% else %}
+                                      <h2 class="cart-item-title">Your Orders </h2>
+                                      <ul class="cart-lists clearfix">
+                                        {% for order in request.user.customerprofile.order_set.all %}
+                                            {% if order.status != 3 and order.status != 4 %}
+                                                <!-- Display order details -->
+                                                <li class="cart-item d-table">
+                                                    <div class="pro-img d-table-cell align-middle">                                                       
+                                                        <a href="{% url 'profiles:store_profile_details' store_profile=order.store.name %}">
+                                                            <img class="img-fluid blur-up lazyload" src="{{ order.store.logo.url }}" data-src="{{ order.store.logo.url }}" alt="image" title="Donec pede justo fringilla" />
+                                                        </a>
+                                                    </div>
+                                                    <div class="item-info pl-4 text-left d-table-cell align-top">
+                                                        <a href="{% url 'profiles:store_profile_details' store_profile=order.store.name %}">{{order.store}}</a>
+                                                        <p class="size-color">{{ order.get_status_display}}</p>
+                                                        <p class="price">${{order.total}}</p>
+                                                    </div>
+                                                    <div class="item-right cart-remove d-table-cell align-middle">
+                                                        <a class="edit mr-2" href="{% url 'orders:order' id=order.id %}"><i class="ti-pencil-alt"></i></a>
+                                                        <a class="remove" href="#"><i class="ti-close"></i></a>
+                                                    </div>
+                                                </li>
+                                            {% endif %}                                            
+                                        {% endfor %}
+                                      </ul> 
+                                      {% endif %}                                                           
+                                  </div>
+                                  <div class="minicart-bottom-actions cleatfix">
+                                      <div class="actions d-inline-block w-100 text-center">
+                                          <a class="btn btn-primary d-block mb-4 font-sm-14 {% if request.user.customerprofile.active_orders == 0 %}disabled{% endif %} " href="{% url 'orders:my_orders' %}">View Orders</a>
+                                      </div>
+                                  </div> {% endcomment %}
+                              </div>
+                          </div>
+                          <!-- End Minicart -->
+                          {% endif %}
+
+                          <!-- Start Setting Menu -->
+                          <div class="setting-menu float-right">
+                            <a href="#" class="setting-toggle" title="My Account">
+                                <i class="icon ti-user"></i>
+                                {% if user.meccanicoadmin and user.meccanicoadmin.new_businesses > 0 %}
+                                <span class="shadow rounded bg-danger text-white fixed-top float-right  position-relative px-1" style="font-size:10px">New</span>
+                                {% endif %}
+                                
+                            </a>
+                            
+                              <div class="settinglinks" style="display:none">
+                                  <!-- Menu Links -->
+                                 
+                                  <div class="my-links">
+                                    {% if user.is_authenticated %}
+                                      <h4>My Account</h4>
+                                    {% endif %}
+                                      
+                                      <ul class="p-0 m-0">
+                                            {% if not user.is_authenticated %}
+                                                <li><a href="{% url 'users:login' %}">Login</a></li>
+                                                <li><a href="{% url 'users:register' %}">Signup</a></li>
+                                            {% else %}                                                
+                                                {% comment %} <li><a href="wishlist.html">Wishlist??????</a></li> {% endcomment %}
+                                                {% if user.meccanicoadmin  %}
+                                                <li><a href="{% url 'profiles:adminstration' %}">Admin Panel
+                                                    {% if user.meccanicoadmin.new_businesses > 0 %}
+                                                    <span  class="rounded bg-danger text-white float-right p-2  mt-2" ></span>
+                                                    {% endif %}
+                                                </a></li>
+                                                {% endif %}
+                                                <li><a href="{% url 'profiles:my_profile' %}">Settings</a></li>                                
+                                                <li><a href="{% url 'users:logout' %}">Log Out</a></li>
+                                            {% endif %}
+                                        </ul>
+                                  </div>
+                                  <!-- Emd Menu Links -->
+                                  
+                                  <!-- Start Languages --> 
+                                  {% comment %} <div class="my-languages">
+                                      <h4>Languages</h4>
+                                      <ul class="languages-picker">
+                                          <li class="item english"><a href="#">English</a></li>
+                                          <li class="item arabic"><a href="#">Arabic</a></li>
+                                         
+                                      </ul>
+                                  </div> {% endcomment %}
+                                  <!-- End Languages -->
+                              </div>
+                          </div>
+                          <!-- End Setting Menu -->
+
+                          <!-- Start Search Box -->
+                          <div class="search-box site-header-search float-right">
+                              <div class="search-toggle d-block d-lg-none" style="cursor:pointer;"><i class="icon ti-search"></i></div>
+                              <form id="searchForm"  action="#" class="search-form">
+                                  <div class="input-group">
+                                      <input type="search" class="form-control" placeholder="Search Products..." required />
+                                      <button class="search-btn btn-secondary" type="submit"><i class="ti-search"></i></button>
+                                  </div>
+                              </form>                              
+                          </div>
+                          <!-- End Search Box -->
+
+                          <!-- Start YMM Box -->
+                          {% comment %} <div class="ymm-search-box-toggle float-right">
+                              <div class="ymm-search vertical">
+                                  <div class="ymm-title-toggle">
+                                      <h1>Parts Finder</h1>
+                                      <i class="icon ymm-icon ti-car"></i>
+                                  </div>
+                                  <div class="ymm-formField clearfix">
+                                      <form  id="filter-form" action="#">                                    
+                                          <div class="form-group">
+                                              <select  id="brand-select" class="select2 form-control" name="sellist2" required>
+                                                  <option value="" disabled selected>Select Brand</option>
+                                                </select>
+                                          </div>
+                                          <div class="form-group">
+                                              <select id="car-select" class="select2 form-control" name="sellist3" required disabled>
+                                                  <option value="" disabled selected>Select Model</option>
+                                              </select>
+                                          </div>
+                                          <div class="form-group">
+                                            <select id="year-select" class="select2 form-control" name="sellist1" required disabled>
+                                                <option value="" disabled selected>Select Year</option>                                
+                                            </select>
+                                        </div>
+                                          <div class="actions-btn d-flex">
+                                              <button type="submit" class="btn btn-primary w-50" id="filter-button">Find</button>
+                                              <button type="button" class="btn btn-secondary w-50" id="reset-button">Reset</button>
+                                          </div>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div> {% endcomment %}
+                          <!-- End YMM Box -->
+                      </div>
+                  </div>
+                  <!-- End Right Menu -->
+              </div>
+          </div>
+      </div>
+      <!-- End Main Header -->
+      {% if user.is_authenticated %}
+      <!-- Start Navigation -->
+      <div class="main-navbar">
+          <div class="container">
+              <nav class="navigation navbar position-static navbar-expand-lg p-0 col-lg-12">
+                  <div id="navbar-collapse" class="navbar-collapse collapse dual-nav">
+                      <a href="#" class="closeNav-btn d-lg-none clearfix" id="closeNav" title="Close"><span class="menu-close mr-2">Close</span><i class="ti-close" aria-hidden="true"></i></a>
+                      <ul class="navbar-nav">
+                          <li class="nav-item dropdown">
+                              <a class="nav-link" href="{% url 'products:index' %}">Home<span class=" plush" title="Click to show/hide"></span></a>  
+                              <!-- Start Megamenu Dropdown -->
+                              {% comment %} <div class="megamenu submenu dropdown">
+                                <a href="{% url 'products:index' %}">Meccanico</h1></a>                                  
+                              </div> {% endcomment %}
+                              <!-- End Megamenu Dropdown -->
+                          </li>
+                          <li class="nav-item dropdown">
+                            <a class="nav-link" href="#">Bussines
+                              <span class="arw plush" title="Click to show/hide"></span>
+                            </a>
+                            <div class="megamenu dropdown">
+                              <ul class="justify-content-center text-center" >
+                                {% if request.user.storeprofile or request.user.workshopprofile %}
+                                    {% if  request.user.storeprofile %}
+                                    <li><a class="item" href="{% url 'profiles:store_profile_details' store_profile=request.user.storeprofile.name%}"> {{request.user.storeprofile.name}}Store</a></li>
+                                    {% endif %}
+                                    {% if request.user.workshopprofile %}                                    
+                                    <li><a class="item" href="{% url 'profiles:workshop_profile_details' workshop_profile=request.user.workshopprofile.name%}">{{request.user.workshopprofile.name}} Workshop</a></li>                                
+                                    {% endif %}
+                                    {% if not request.user.storeprofile %}
+                                    <li class="item"><a href="{% url 'profiles:add_store_profile'">Add A Store</a></li>
+                                    {% elif not request.user.workshopprofile %}
+                                    <li class="item"><a href="{% url 'profiles:add_workshop_profile'%}">Add A workshop</a></li>
+                                    {% endif %}
+                                {% else %}
+                                    <li class="item"><a href="{% url 'profiles:business_selection' %}">Make A Bussines</a></li>
+                                {% endif %}                                                     
+                              </ul>
+                            </div>                     
+                          </li>
+                          <li class="nav-item dropdown">
+                            <a  id='services-nav' class="nav-link" href="#">Services
+                                {% if request.user.customerprofile.count_unseen_orders_notifications > 0 or user.customerprofile.count_unseen_reservations_notifications > 0 or user.storeprofile.count_unseen_orders_notifications > 0 or user.workshopprofile.count_unseen_reservations_notifications > 0 %}
+                                    <span class="lbl new bg-danger">New</span>
+                                {% endif %}
+                              <span class="arw plush" title="Click to show/hide"></span>                              
+                            </a>
+                            <div class="megamenu dropdown">
+                              <ul class="" >
+                             
+                                <li><a class="item" href="{% url 'orders:my_orders' %}">My Orders 
+                                    {% if request.user.customerprofile.count_unseen_orders_notifications > 9 %}
+                                    <span id="customer-orders" class="rounded bg-danger text-white float-right p-1" >+9</span>
+                                    {% elif user.customerprofile.count_unseen_orders_notifications > 0%}
+                                    <span id="customer-orders" class="rounded bg-danger text-white float-right p-1" >
+                                    {{request.user.customerprofile.count_unseen_orders_notifications}}
+                                    </span>
+                                    {% else %}
+                                    <span id="customer-orders"></span>
+                                    {% endif %}
+                                </span></a></li>
+
+                                </a></li>
+                                <li><a class="item" href="{% url 'orders:customer_reservations'%}">My Reservations 
+                                    {% if request.user.customerprofile.count_unseen_reservations_notifications > 9 %}
+                                    <span id="customer-reservations" class="rounded bg-danger text-white float-right p-1" >+9</span>
+                                    <span id="customer-reservations" class="rounded bg-danger text-white float-right p-1" >
+                                    {% elif  user.customerprofile.count_unseen_reservations_notifications > 0 %}
+                                    <span id="customer-reservations" class="rounded bg-danger text-white float-right p-1" >
+                                    {{request.user.customerprofile.count_unseen_reservations_notifications}}
+                                    </span>
+                                    {% else %}
+                                    <span id="customer-reservations"></span>
+                                    {% endif %}
+                                </span></a></li>
+                                {% if  request.user.storeprofile %}
+                                <li class="clearfix"><a class="item" href="{% url 'orders:store_orders' id=request.user.storeprofile.id %}"> {{request.user.storeprofile}} Orders
+                                        {% if user.storeprofile.count_unseen_orders_notifications > 9 %}
+                                        <span id="store-orders" id="store-orders" class="rounded bg-danger text-white float-right p-1" >+9</span>
+                                        {% elif user.storeprofile.count_unseen_orders_notifications > 0 %}
+                                        <span id="store-orders" id="store-orders" class="rounded bg-danger text-white float-right p-1" >
+                                            {{user.storeprofile.count_unseen_orders_notifications}}
+                                        </span>
+                                        {% else %}
+                                        <span id="store-orders" id="store-orders"></span>
+                                        {% endif %}
+                                    </a></li>
+                                </a></li>
+                                {% endif %}                                    
+                                {% if  request.user.workshopprofile %}
+                                <li class="clearfix"><a class="item"  href="{% url 'orders:workshop_reservations' id=user.workshopprofile.id %}"> {{request.user.workshopprofile}} Reservations
+                                    {% if request.user.workshopprofile.count_unseen_reservations_notifications %}
+                                        {% if request.user.workshopprofile.count_unseen_reservations_notifications > 9 %}
+                                        <span  id="workshop-reservations" class="rounded bg-danger text-white float-right p-1">+9</span>
+                                        {% elif user.workshopprofile.count_unseen_reservations_notifications > 0 %}
+                                        <span id="workshop-reservations" class="rounded bg-danger text-white float-right p-1">
+                                        {{request.user.workshopprofile.count_unseen_reservations_notifications}}
+                                        </span>
+                                        {% else %}
+                                        <span id="workshop-reservations"></span>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% comment %} {% if user.storeprofile.new_orders > 0 %}
+                                    <span  id="type-2"  class="rounded bg-danger text-white float-right p-1">
+                                    {{user.storeprofile.new_orders}}
+                                    </span>
+                                    {% endif %} {% endcomment %}
+                                </a></li>
+                                {% endif %}                                    
+                              </ul>
+                            </div>                     
+                          </li>                                     
+                          <li class="nav-item dropdown">
+                            <a class="nav-link " id="inbox-nav" href="#">Inbox
+                                {% if user.customerprofile.inbox.count_unseen_notifications > 0 or user.storeprofile.inbox.count_unseen_notifications > 0  or user.workshopprofile.inbox.count_unseen_notifications > 0%}
+                                <span class="lbl new bg-danger">New</span>
+                                {% endif %}
+                                
+                                <span class="arw plush" title="Click to show/hide"></span>
+                            </a>
+                            <div class="megamenu dropdown">
+                              <ul>
+                                    {% if  request.user.meccanicoadmin %}
+                                  <li><a  id="type-0" class="item" href="{% url 'inboxes:my_inbox' type=0 %}">Admin
+                                    {% if user.meccanicoadmin.inbox.count_unseen_notifications > 0 %}
+                                    <span class="rounded bg-danger text-white float-right p-1">
+                                    {{user.meccanicoadmin.inbox.count_unseen_notifications}}
+                                    </span>
+                                    {% endif %} 
+                                    </a></li>                                   
+                                  {% endif %}  
+                                  <li class="clearfix"><a id="type-1" class="item " href="{% url 'inboxes:my_inbox' type=1 %}">Personal
+                                    {% if user.customerprofile.inbox.count_unseen_notifications > 0 %}
+                                    <span class="rounded bg-danger text-white float-right p-1">
+                                    {{user.customerprofile.inbox.count_unseen_notifications}}
+                                    </span>
+                                    {% endif %}
+                                    </a></li>                                    
+                                  {% if  request.user.storeprofile %}
+                                  <li><a id="type-2" class="item" href="{% url 'inboxes:my_inbox' type=2 %}">Store 
+                                    {% if user.storeprofile.inbox.count_unseen_notifications > 0 %}
+                                    <span  class="rounded bg-danger text-white float-right p-1">
+                                    {{user.storeprofile.inbox.count_unseen_notifications}}
+                                    </span>
+                                    {% endif %}
+                                    </a></li>
+                                  {%endif%}
+                                  {% if  request.user.workshopprofile %}
+                                  <li><a  id="type-3" class="item" href="{% url 'inboxes:my_inbox' type=3 %}">Workshop
+                                    {% if user.workshopprofile.inbox.count_unseen_notifications > 0 %}
+                                    <span class="rounded bg-danger text-white float-right p-1">
+                                    {{user.workshopprofile.inbox.count_unseen_notifications}}
+                                    </span>
+                                    {% endif %} 
+                                    </a></li>                                   
+                                  {% endif %}                
+                              </ul>
+                            </div>                        
+                          </li>
+                      </ul>
+                  </div>
+              </nav>
+          </div>
+      </div>
+      {% endif %}
+      <!-- Start Navigation -->
+    </header>
+    <!-- End Header Section -->    
+   
+    <main class="main-content mb-5">
+        {% block content %}
+        {% endblock content %}
+    </main>
+    {% block chat_content %}
+    {% endblock chat_content %}
+    <!-- Start Footer Section -->
+    <footer class="footer footer-v3">
+      <!-- Start Footer Topbar -->
+      <div class="footer-top clearfix">
+          <div class="container">
+              <div class="row no-gutters footer-links">
+                  <div class="col-12 col-sm-12 col-md-4 col-lg-4 menu-items">
+                      <h4>Useful Links</h4>
+                      <ul class="linklist">
+                          <li><a href="{% url 'products:index' %}">Home</a></li>      
+                          <li><a href="contact-us.html">Contact</a></li>
+                      </ul>
+                  </div>
+                  <div class="col-12 col-sm-12 col-md-4 col-lg-4 menu-items">
+                      <h4>Help Links</h4>
+                      <ul class="linklist">
+                        {% if not user.is_authenticated %}
+                        <li><a href="{% url 'users:login' %}">Login</a></li>
+                        <li><a href="{% url 'users:register' %}">Signup</a></li
+                        {% else %}
+                           <li><a href="{% url 'users:logout' %}">Logout</a></li>
+                          {% comment %} <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
+                          <li><a href="#">Delivery</a></li> {% endcomment %}
+                            {% endif %}
+                        </ul>
+                  </div>
+                  <div class="col-12 col-sm-12 col-md-4 col-lg-4 contact">
+                      <h4>Contact Information</h4>
+                      <ul class="linklist contact-info d-flex flex-column">
+                          <li><i class="icon ti-location-pin"></i><span>Ain Zara, <br/>Tripoli, LY</span></li>
+                          <li><i class="icon fa fa-phone"></i><a href="tel:+011234567890">(+218) 924477906</a></li>
+                          <li><i class="icon ti-email"></i><a href="mailto:info@example.com">Contact Us</a></li>
+                      </ul>
+                  </div>
+                 
+              </div>
+          </div>
+      </div>
+      <!-- End Footer Topbar -->
+
+      <!-- Start Footer Bottom -->
+      <div class="footer-bottom clearfix">
+          <div class="container clearfix">
+              {% comment %} <div class="payment-icons pull-right">
+                  <i class="fa fa-cc-visa" aria-hidden="true"></i> 
+                  <i class="fa fa-cc-amex" aria-hidden="true"></i> 
+                  <i class="fa fa-cc-mastercard" aria-hidden="true"></i> 
+                  <i class="fa fa-cc-discover" aria-hidden="true"></i> 
+                  <i class="fa fa-cc-paypal" aria-hidden="true"></i> 
+              </div> {% endcomment %}
+              <div class="copyright-content pt-md-1 row"> 
+                  <span class="content mx-auto"> Copyright &copy; 2023 Meccanico Auto Parts. All Rights Reserved.</span> 
+              </div>
+          </div>
+      </div>
+      <!-- End Footer Bottom -->
+    </footer>
+    <!-- End Footer Section -->
+    {% block chat_scripts %}
+    
+    {% endblock chat_scripts %}
+    {{request.user.username|json_script:"customer-username"}}
+    {{request.user.storeprofile.id|json_script:"store_id"}}
+    
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    {% comment %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script> {% endcomment %}
+    <!-- Include jQuery -->
+    
+    <!-- AJAX Search script -->
+<script>
+    var load_brands_url = "{% url 'products:ajax_load_brands' %}";
+    var load_cars_url = "{% url 'products:ajax_load_cars' %}";
+    var load_years_url = "{% url 'products:ajax_load_years' %}";
+    $(document).ready(function () {
+        $("#searchForm").on("submit", function (event) {
+            event.preventDefault();
+            let searchQuery = $(this).find("input[type='search']").val();
+            window.location.href = "{% url 'products:search_results' %}?q=" + searchQuery;
+        });
+
+        $("#filter-form").on("submit", function (event) {
+            event.preventDefault();
+            let brand = $(this).find("select[id='brand-select']").val();
+            let car = $(this).find("select[id='car-select']").val();
+            let year = $(this).find("select[id='year-select']").val();
+            window.location.href = "{% url 'products:filter_results' %}?brand=" + brand + "&car=" + car + "&year=" + year;
+        });
+    });
+</script>
+    <!-- ******** JS Files ******** --> 
+        
+        <!-- Plugin JS -->	        
+        <script src="{% static 'js/plugins.js' %}"></script>
+        <!-- Main JS -->
+        <script src="{% static 'js/main.js' %}"></script>
+        <!--  Notifications JS -->
+        <script src="{% static 'orders/js/reservation_notify.js' %}"></script>
+        <script src="{% static 'orders/js/order_notify.js' %}"></script>
+        <script src="{% static 'js/message_notify.js' %}"></script>
+        
+        {% comment %} <script src="{% static 'js/filter.js' %}"></script> {% endcomment %}
+   <script src="{% static 'js/style.js' %}"></script>
+
+  </body>
+</html>  

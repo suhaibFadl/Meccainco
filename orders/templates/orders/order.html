@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'stars_rating/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'orders/css/order-bar.css' %}">
+{% endblock css %}
+{% block title %}My Orders{% endblock title %}    
+
+{% block content %}
+ 
+{% if order.status <= 4 %}
+<div id="order-bar" class="container px-1 px-md-4 py-5 mx-auto w-75">
+    <div class="card border-0">
+        {% comment %} <div class="row d-flex justify-content-between px-3 top">
+            <div class="d-flex">
+                <h5>ORDER <span class="text-primary font-weight-bold">#Y34XDHR</span></h5>
+            </div>
+            <div class="d-flex flex-column text-sm-right">
+                <p class="mb-0">Expected Arrival <span>01/12/19</span></p>
+                <p>USPS <span class="font-weight-bold">234094567242423422898</span></p>
+            </div>
+        </div> {% endcomment %}
+        <!-- Add class 'active' to progress -->
+        <div class="row d-flex justify-content-center">
+            <div class="col-12">
+            <ul id="progressbar" class="text-center">
+                {% for i in "xxxx" %}  <!-- Loop to render 5 stars -->
+                    {% if forloop.counter <= order.status %}
+                    <li class="active step0"></li>
+                    {% else %}
+                    <li class="step0"></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            </div>
+        </div>
+        <div class="row w-100 m-0 ">
+            <div class="col-3 w d-flex flex-column icon-content justify-content-center">
+                    <img class="icon mx-auto" src="https://i.imgur.com/9nnc9Et.png">
+                <div class="row d-flex flex-column mx-auto">
+                    <p class="font-weight-bold mx-auto"><b>Order</b><br>Waiting for Approval</p>
+                </div>
+            </div>
+            <div class="col-3  icon-content  d-flex flex-column">
+                <img class="icon mx-auto" src="https://i.imgur.com/u1AzR7w.png">
+                <div class="d-flex flex-column mx-auto">
+                    <p class="font-weight-bold">Order<br>In Progress</p>
+                </div>
+            </div>
+            <div class="col-3 icon-content d-flex flex-column">
+                <img class="icon mx-auto" src="https://i.imgur.com/TkPm63y.png">
+                <div class="d-flex flex-column mx-auto">
+                    <p class="font-weight-bold">Order<br>En Route</p>
+                </div>
+            </div>
+            <div class="col-3 icon-content d-flex flex-column">
+                <img class="icon mx-auto" src="https://i.imgur.com/HdsziHP.png">
+                <div class="d-flex flex-column mx-auto">
+                    <p class="font-weight-bold">Order<br>Dellivered</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="cart-content-inner mt-5 pt-5">
+    <div class="container">
+        <div class="row">
+            <!-- Start Cart Details -->
+            <div class="cart-view-table col-12 col-sm-12 col-lg-9 sidebar-left mx-auto">
+
+                <!-- Start Cart Table -->
+                <div class="table-content table-responsive">
+                    <table class="table table-bordered border-0 table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Image</th>
+                                <th class="text-center text-sm-left">Product Name</th>
+                                <th class="text-center">Price</th>
+                                <th class="text-center">Qty</th>  
+                                {% if order.get_status_display == 'Product Unavailable' %}
+                                <th class="text-center">Availabiltiy</th>
+                                {% endif %}                             
+                                <th class="text-center">Total</th>
+                                {% if order.get_status_display == 'Delivered'%}
+                                <th class="text-center">Rating</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.orders.all %}
+                            <tr>
+                                <td class="pro-img text-center"><a href="{% url 'products:product_details' id=item.product.id %}"><img class="img-fluid blur-up lazyload" src="{{item.product.part.image.url}}" data-src="{{item.product.part.image.url}}" alt="image" title="image" width="100" /></a></td>
+                                <td class="pro-del text-center text-sm-left">
+                                    <p class="mb-1 pro-name"><a href="{% url 'products:product_details' id=item.product.id %}">{{item.product.part.name}}</a></p>
+                                </td>
+                                <td class="pro-price text-center">$ <span id="item-price-{{item.id}}">{{item.product.price}}</span></td>
+                                <td class="pro-qty text-center">    
+                                    {% if  not order.confirmed %}
+                                    <div class="row justify-content-center p-0">
+                                        <div class="border">
+                                            <button class="btn btn-light" id="decreament" onclick="decrement('{{item.id}}', '{{item.product.min_quantity}}')"><i class="fa fa-minus"></i></button>
+                                            <input type="text" style="width:30px" class="quantity m-0 border-0" name="quantity" item-id="{{item.id}}" id="quantity-{{item.id}}" value="{{item.quantity}}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                            <button class="btn btn-light" id="increament" onclick="increment('{{item.id}}', '{{item.product.max_quantity}}')"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                       
+                                        {% comment %} <button type="button" class="button " id="decreament" onclick="decrement('{{item.id}}')" value=""><i class="fa fa-minus"></i></button>
+                                        <input type="text" name="quantity" item-id="{{item.id}}" id="q1uantity-{{item.id}}" value="{{item.quantity}}" class="qty-input" />                             
+                                        <button type="button" class="button" id="increament" onclick="increment('{{item.id}}')" value=""><i class="fa fa-plus"></i></button> {% endcomment %}
+                                        <a class="qty-remove ml-3 pt-3" href="#" onclick="cancel_item('{{item.id}}')"><i class="ti-close"></i></a>
+                                    </div>
+                                    {% else %}
+                                    <div class="row justify-content-center p-0">
+                                       <p>{{item.quantity}}</p>
+                                    </div>
+                                    {% endif %}
+                                </td>
+                                {% if order.get_status_display == 'Product Unavailable' %}
+                                <td class="text-center">
+                                    <div class="row justify-content-center">
+                                    {% if item.product.is_available == True %}
+                                        <button class='btn text-success border border-success'>Available</button>
+                                    {% else %}
+                                        <button class='btn bg-danger text-light'>Unavailable</button>
+                                    {% endif %}
+                                    </div>
+                                    
+                                </td>
+                                {% endif %}
+                                <td class="pro-total text-center" id="total-item-{{item.id}}">${{item.item_total_price}}</td>
+                                {% if order.get_status_display == 'Delivered'%}
+                                    <td>
+                                        <div class="row">
+                                                <div class="star-rating mx-auto" data-product-id="{{ item.product.id }}">
+                                                    {%  for item_id, rating in product_ratings.items %}
+                                                        {% if item_id == item.id %}
+                                                            {% for i in "54321" %}  <!-- Loop to render 5 stars -->                       
+                                                            <input type="radio" name="rating-{{ item.id }}" id="rating{{ i }}-{{ item.id }}" value="{{ i }}"
+                                                            {% with i|add:0 as int_i %}
+                                                                {% if rating == int_i %} checked {% endif %}
+                                                            {% endwith %}
+                                                            >
+                                                            <label for="rating{{ i }}-{{ item.id }}" class="star">&#9733;</label>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                        </div>
+                                    </td>                                    
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- End Cart Table -->
+                <!-- Start Cart Action Button -->
+                {% comment %} <div class="cart-table-action clearfix">
+                    <a href="#" class="btn btn-secondary pull-left">Update Cart</a>
+                    <a href="#" class="btn btn-secondary pull-right">Continue Shopping</a>
+                </div> {% endcomment %}
+                <!-- End Cart Action Button -->
+            </div>
+            <!-- End Cart Details -->
+
+            <!-- Start Cart Sidebar -->
+            {% if user == order.customer.user %}
+            <div class="cart-view-summary col-12 col-sm-12 col-lg-3 sidebar sidebar-right">
+                {% if  not order.confirmed %}
+                <form action="#" class="checkout-form needs-validation" novalidate>
+                    <!-- Start Cart Note -->
+                    <div class="cart-note">
+                        <div class="form-group">
+                            <label for="cart-note">Add a note to your order</label>
+                            <textarea class="form-control" id="order-note" rows="4" ></textarea>
+                        </div>
+                    </div>
+                    <!-- End Cart Note -->
+                    <!-- Start Cart Order Summary -->
+                    <div class="cart-order-summary">
+                        <h3 class="order-summary-title">Order Summary</h3>
+                    </div>
+                    <!-- End Cart Order Summary -->
+                    <!-- Start Cart Sub Total -->
+                    <div class="cart-subtotal clearfix my-3">
+                        <p class="subtle-title m-0 pull-left text-uppercase">Store</p>
+                        <p class="sabtotal m-0 pull-right"><a href="{% url 'profiles:store_profile_details' store_profile=order.store.name %}">{{ order.store}}</a></p>
+                    </div>
+                    <div class="cart-subtotal clearfix">
+                        <p class="subtle-title m-0 pull-left text-uppercase">Subtotal</p>
+                        <p class="sabtotal m-0 pull-right">$<span id="order-total">{{order.total}}</span></p>
+                    </div>
+                    <!-- End Cart Sub Total -->
+                    <!-- Start Cart Shipping -->
+                    {% comment %} <p class="cart-shipping font-13">Shipping & taxes Calculated at checkout</p> {% endcomment %}
+                    <!-- End Cart Shipping -->
+
+                    <!-- Start Cart Checkout Button -->
+                    <div class="cart-checkout">
+                        <button type="submit" id="confirm-btn" onclick="confirm()" class="btn btn-primary btn-block">Confirm</button>
+                    </div>
+                    <!-- End Cart Checkout Button -->
+                </form>
+                {% else %}
+                <div class="cart-order-summary">
+                    <h3 class="order-summary-title">Order Summary</h3>
+                </div>
+                <div class="cart-subtotal clearfix my-3 px-3">
+                    <p class="subtle-title m-0 pull-left text-uppercase">Store</p>
+                    <p class="sabtotal m-0 pull-right"><a href="{% url 'profiles:store_profile_details' store_profile=order.store.name %}">{{ order.store}}</a></p>
+                </div>
+                <div class="cart-subtotal clearfix my-3 px-3">
+                    <p class="subtle-title m-0 pull-left text-uppercase">Subtotal</p>
+                    <p class="sabtotal m-0 pull-right">$<span id="order-total">{{order.total}}</span></p>
+                </div>
+                <div class="cart-checkout my-5">
+                    {% if order.status == 7 %}
+                    <div id="update-btn" class="my-2">
+                        <button id="confirm-order" class="btn btn-primary btn-block" onclick="update_order('{{order.id}}', '2')">Confirm</button>
+                    </div>
+                    {% endif %}
+                    {% if order.status <= 2 or order.status == 7 %}
+                    <button id="confirm-btn"  onclick="cancel_order({{order.id}})" class="btn btn-secondary btn-block">Cancel</button>
+                    {% elif order.status == 5 %}
+                    <button class="btn btn-secondary btn-block" disabled>Store Canceled</button>
+                    {% elif order.status == 6 %}
+                    <button class="btn btn-secondary btn-block" disabled>Customer Canceled</button>
+                    {% endif %}    
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            <!-- End Cart Sidebar -->
+        </div>
+    </div>
+</div>
+
+
+    {% comment %} <p>{{order.store}}</p>
+    {% for item in order.orders.all %}
+    <p id="item-{{item.id}}">
+        {{item.product.part.name}} - <span id="item-price-{{item.id}}">{{item.product.price}}</span> - <span id="item-quantity-{{item.id}}">{{item.quantity}}</span> - <span id="total-item-{{item.id}}">{{item.item_total_price}}</span>
+        {% if  not order.confirmed %}
+            <button id="decreament" onclick="decrement('{{item.id}}')">-</button>
+            <input type="text" class="quantity" name="quantity" item-id="{{item.id}}" id="quantity-{{item.id}}" value="{{item.quantity}}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+            <button id="increament" onclick="increment('{{item.id}}')">+</button>
+            <button onclick="cancel_item('{{item.id}}')">cancel</button>
+        {% elif order.get_status_display == 'Delivered'%}
+        <div class="star-rating" data-product-id="{{ item.product.id }}">
+            <input type="radio" name="rating-{{ item.id }}" id="rating5-{{ item.id }}" value="5">
+            <label for="rating5-{{ item.id }}" class="star">&#9733;</label>
+            <input type="radio" name="rating-{{ item.id }}" id="rating4-{{ item.id }}" value="4">
+            <label for="rating4-{{ item.id }}" class="star">&#9733;</label>
+            <input type="radio" name="rating-{{ item.id }}" id="rating3-{{ item.id }}" value="3">
+            <label for="rating3-{{ item.id }}" class="star">&#9733;</label>
+            <input type="radio" name="rating-{{ item.id }}" id="rating2-{{ item.id }}" value="2">
+            <label for="rating2-{{ item.id }}" class="star">&#9733;</label>
+            <input type="radio" name="rating-{{ item.id }}" id="rating1-{{ item.id }}" value="1">
+            <label for="rating1-{{ item.id }}" class="star">&#9733;</label>
+        </div> 
+        {% endif %}
+    </p>
+    {% endfor %}
+    <p>Total = <span id="order-total">{{order.total}}</span></p>
+    {% if  not order.confirmed %}
+    <button id="confirm-btn" onclick="confirm()">Confirm</button>
+    {% else %}
+    <p id="order-status">{{ order.get_status_display}}</p>
+    {% endif %} {% endcomment %}
+    <script>
+        var confirm_order_url = "{% url 'orders:confirm_order' %}";
+        var update_order_url = "{% url 'orders:update_store_order' %}";
+        var u_order_url = "{% url 'orders:confirm_order' %}";
+        var cancel_order_url = "{% url 'orders:cancel_order' %}";
+        var cancel_item_url = "{% url 'orders:cancel_item' %}";
+    </script>
+
+    <script>
+        var store_id = {{order.store.id}};
+        var order_id = {{order.id}};
+        var rating_url = "{% url 'stars_rating:product_rate_model' %}";
+    </script>
+    <script src="{% static 'stars_rating/js/product_rating.js' %}"></script>
+    <script src="{% static 'orders/js/order.js' %}"></script>
+    <script src="{% static 'orders/js/update_orders_list.js' %}"></script>
+    {% comment %} <script src="{% static 'orders/js/update_status.js' %}"></script> {% endcomment %}
+{% endblock content %}

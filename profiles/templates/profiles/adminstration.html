@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+{% block css %}
+{% endblock css %}
+{% block title %}Admin Panel{% endblock title %}    
+
+{% block content %}
+    <!-- Start My Account -->
+    <div class="my-account-content">
+        <div class="container">            
+            <div class="account-inner-info">
+                <div class="row">
+                    <!-- Start My Account Nav -->
+                    <div class="account-nav mb-5 mb-sm-0 col-12 col-sm-3 col-md-3">
+                        <div class="nav flex-row flex-sm-nowrap flex-sm-column nav-pills" id="v-pills-tab" role="tablist">
+                            {% comment %} <a class="nav-link " id="my-account-home-tab" data-toggle="pill" href="#my-account-home" role="tab" aria-controls="my-account-home" aria-selected="true">Dashboard</a> {% endcomment %}
+                            <a class="nav-link active" id="my-account-order-tab" data-toggle="pill" href="#stores" role="tab" aria-controls="stores" aria-selected="false">Stores</a>
+                            <a class="nav-link" id="my-account-order-tab" data-toggle="pill" href="#workshops" role="tab" aria-controls="workshops" aria-selected="false">Workshops</a>
+                            <a class="nav-link" id="my-account-order-tab" data-toggle="pill" href="#customers" role="tab" aria-controls="customers" aria-selected="false">Customers</a>
+                            <a class="nav-link" id="my-account-downloads-tab" data-toggle="pill" href="#my-account-downloads" role="tab" aria-controls="my-account-downloads" aria-selected="false">Downloads</a>
+                            <a class="nav-link" id="my-account-address-tab" data-toggle="pill" href="#my-account-address" role="tab" aria-controls="my-account-address" aria-selected="false">Addresses</a>
+                            <a class="nav-link" id="my-account-details-tab" data-toggle="pill" href="#my-account-details" role="tab" aria-controls="my-account-details" aria-selected="false">Account Details</a>
+                            <a class="nav-link" href="login.html">Logout</a>
+                        </div>
+                    </div>
+                    <!-- End My Account Nav -->
+
+                    <!-- Start My Account Details -->
+                    <div class="account-details col-12 col-sm-9 col-md-9">
+                        <div class="tab-content" id="account-tabContent">
+                            <!-- Start Dashboard -->
+                            <div class="dashboard tab-pane fade " id="my-account-home" role="tabpanel" aria-labelledby="my-account-home-tab">
+                                <div class="tab-pane fade active show" id="dashboard">
+                                    <h3>Dashboard </h3>
+                                    <p>From your account dashboard. you can easily check &amp; view your <a class="link-color" href="">recent orders</a>, manage your <a class="link-color" href="">shipping and billing addresses</a> and <a href="" class="link-color">edit your password and account details</a>.</p>
+                                </div>
+                            </div>
+                            <!-- End Dashboard -->
+
+                            <!-- Start Stores -->
+                            <div class="tab-pane fade show active" id="stores" role="tabpanel" aria-labelledby="stores">
+                                <div class="tab-pane fade active show" id="orders">
+                                    <h3>Stores</h3>
+                                    <div class="order-table table-responsive">
+                                        <table class="table text-center">
+                                            <tbody>
+                                                {% for store in stores %}
+                                                <tr id="store-row-{{store.id}}">
+                                                    <td>{{store.id}}</td>
+                                                    <td><a href="{% url 'profiles:store_profile_details' store_profile=store.name %}">{{store}}</a></td>
+                                                    <td>{{store.owner}}</td>
+                                                    {% if store.store_rating.first.rating == None %} 
+                                                    <td>0<i class="pl-2 fa fa-star"></i></td>
+                                                    {% else %}<td>{{store.store_rating.first.rating}}<i class="pl-2 fa fa-star"></i></td>                        
+                                                    {% endif %}
+                                                    <td><a class="link-color view" href="{% url 'orders:store_orders'  id=store.id %}">Orders</a></td>
+                                                    <td id='store-col-{{store.id}}'>
+                                                        {% if store.is_activated %}                                                        
+                                                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#de-activate-stores-{{store.id}}">
+                                                            De-Activate
+                                                        </button>
+                                                        {% else %}
+                                                        <button type="button" obj-id={{store.id}} business-type="store" class=" activation btn btn-primary">
+                                                            Activate
+                                                        </button>
+                                                        {% endif %}
+                                                        
+                                                    </td>                
+                                                    <td><button class="btn btn-danger" data-toggle="modal" data-target="#de-delete-stores-{{store.id}}">
+                                                        Delete
+                                                    </button></td>
+                                                    <td>
+                                                        {% if store.status == 1 %}
+                                                        <span id="" class="rounded bg-danger text-white float-right p-2 mt-2" >New</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}                    
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Orders -->
+
+                            <!-- Start Workshops -->
+                            <div class="tab-pane fade" id="workshops" role="tabpanel" aria-labelledby="workshops">
+                                <div class="tab-pane fade active show" id="orders">
+                                    <h3>Workshops</h3>
+                                    <div class="order-table table-responsive">
+                                        <table class="table text-center">
+                                            <tbody>
+                                                {% for workshop in workshops %}
+                                                <tr id="workshop-row-{{workshop.id}}">
+                                                    <td>{{workshop.id}}</td>
+                                                    <td><a href="{% url 'profiles:workshop_profile_details' workshop_profile=workshop.name %}">{{workshop}}</a></td>
+                                                    <td>{{workshop.owner}}</td>
+                                                    {% if workshop.workshop_rating.first.rating == None %} 
+                                                    <td>0<i class="pl-2 fa fa-star"></i></td>
+                                                    {% else %}<td>{{workshop.workshop_rating.first.rating}}<i class="pl-2 fa fa-star"></i></td>                        
+                                                    {% endif %}
+                                                    <td><a class="link-color view" href="{% url 'orders:workshop_reservations' id=workshop.id %}">Reservaions</a></td>
+                                                    <td id='workshop-col-{{workshop.id}}'>
+                                                        {% if workshop.is_activated %}                                                        
+                                                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#de-activate-workshops-{{workshop.id}}">
+                                                            De-Activate
+                                                        </button>
+                                                        {% else %}                                                                                            
+                                                        <button type="button" obj-id={{workshop.id}} business-type="workshop" class="activation btn btn-primary">
+                                                            Activate
+                                                        </button>
+                                                        {% endif %}
+                                                        
+                                                    </td>                    
+                                                    <td>
+                                                        <td><button class="btn btn-danger" data-toggle="modal" data-target="#de-delete-workshops-{{workshop.id}}">
+                                                            Delete
+                                                        </button></td>
+                                                    </td>
+                                                    <td>
+                                                        {% if store.status == 1 %}
+                                                        <span id="" class="rounded bg-danger text-white float-right p-2 mt-2" >New</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}                    
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Customers -->
+
+                            <!-- Start Customers -->
+                            <div class="tab-pane fade" id="customers" role="tabpanel" aria-labelledby="customers">
+                                <div class="tab-pane fade active show" id="orders">
+                                    <h3>Customers</h3>
+                                    <div class="order-table table-responsive">
+                                        <table class="table text-center">
+                                            <tbody>
+                                                {% for customer in customers %}
+                                                <tr id="customer-row-{{customer.id}}">
+                                                    <td>{{customer.id}}</td>
+                                                    {% comment %} <td><a href="{% url 'profiles:workshop_profile_details' workshop_profile=workshop.name %}">{{workshop}}</a></td> {% endcomment %}
+                                                    <td>{{customer}}</td>
+                                                    {% comment %} <td>{{workshop.owner}}</td> {% endcomment %}
+                                                    
+                                                    <td><a class="link-color view" href="{% url 'orders:customer_services' id=customer.id service='orders' %}">Orders</a></td>
+                                                    <td><a class="link-color view" href="{% url 'orders:customer_services' id=customer.id service='reservations' %}">Reservaions</a></td>
+                                                    <td>
+                                                        <td><button class="btn btn-danger" data-toggle="modal" data-target="#delete-customers-{{customer.id}}">
+                                                            Delete
+                                                        </button></td>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}                    
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Customers -->
+
+                            <!-- Start Downloads -->
+                            <div class="tab-pane fade" id="my-account-downloads" role="tabpanel" aria-labelledby="my-account-downloads-tab">
+                                <h3>Downloads</h3>
+                                <div class="downloads-table table-responsive">
+                                    <table class="table table-bordered text-center">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">Product</th>
+                                                <th>Downloads</th>
+                                                <th>Expires</th>
+                                                <th>Download</th>	 	 	 	
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-left">Autoparts - Ecommerce Bootstrap Template</td>
+                                                <td>Feb 14, 2018</td>
+                                                <td><span class="danger">Expired</span></td>
+                                                <td><a href="#" class="link-color view">Click Here To Download Your File</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left">Autoparts - Ecommerce Bootstrap Template</td>
+                                                <td>May 21, 2018</td>
+                                                <td>Never</td>
+                                                <td><a href="#" class="link-color view">Click Here To Download Your File</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- End Downloads -->
+
+                            <!-- Start Address -->
+                            <div class="tab-pane fade" id="my-account-address" role="tabpanel" aria-labelledby="my-account-address-tab">
+                                <h3>Address</h3>
+                                <p>The following addresses will be used on the checkout page by default.</p>
+                                <div class="row">
+                                    <div class="col-12 col-sm-6 col-md-6 mb-4 mb-sm-0">
+                                        <h4>Shipping Address</h4>
+                                        <a class="mb-4 d-block link-color" href="#">Edit</a>
+                                        <p class="mb-2"><strong>Block:</strong> B</p>
+                                        <p class="mb-2"><strong>House:</strong> No 40</p>
+                                        <p class="mb-2"><strong>Street:</strong> Baria Street 133/2,</p>
+                                        <p class="mb-2"><strong>Road:</strong> NewYork, USA</p>
+                                        <p class="mb-2"><strong>Call:</strong> (+01) 123 456 7890</p>
+                                        <p class="mb-2"><strong>FAX:</strong> 1 200 454 2569</p>
+                                        <p class="mb-2"><strong>E-mail:</strong> info@example.com</p>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-6">
+                                        <h4>Billing address</h4>
+                                        <a class="mb-4 d-block link-color" href="#">Edit</a>
+                                        <p>You have not set up this type of address yet.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Address -->
+
+                            <!-- Start Account Details -->
+                            <div class="tab-pane fade" id="my-account-details" role="tabpanel" aria-labelledby="my-account-details-tab">
+                                <h3>Account Details</h3>
+                                <form action="#" class="save-register-form needs-validation" novalidate>
+                                    <p>Already have an account? <a href="login.html" class="link-color">Log in instead!</a></p>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="gender" id="mr" value="mr" required />
+                                                <label class="form-check-label mb-0 ml-1" for="mr">Mr.</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="gender" id="mrs" value="mrs" required />
+                                                <label class="form-check-label mb-0 ml-1" for="mrs">Mrs.</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label>First Name *</label>
+                                            <input type="text" class="form-control" placeholder="" required />
+                                            <div class="invalid-feedback">Please enter your first name.</div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label>Last Name *</label>
+                                            <input type="text" class="form-control" placeholder="" required />
+                                            <div class="invalid-feedback">Please enter your last name.</div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label>Email Address *</label>
+                                            <input type="email" class="form-control" placeholder="" required />
+                                            <div class="invalid-feedback">Please enter your email.</div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label>Password *</label>
+                                            <input type="password" class="form-control" placeholder="" required />
+                                            <div class="invalid-feedback">Please enter your password.</div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <small>(E.g.: 12/01/2018)</small>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="receive-offers" required />
+                                                <label class="form-check-label mb-0 ml-3" for="receive-offers">Receive offers from our partners</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <p class="mb-2"><strong>Sign up for our newsletter</strong></p>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="newsletter" required />
+                                                <label class="form-check-label mb-0 ml-3" for="newsletter">You may unsubscribe at any moment. For that purpose, please find our contact info in the legal notice.</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <div class="account-save mt-1 mt-sm-3">
+                                                <button type="submit" class="btn btn-secondary">Save Changes</button >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- End Account Details -->
+                        </div>
+                    </div>
+                    <!-- End My Account Details -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End My Account -->
+
+    <!-- Stores Modals -->
+    {% for store in stores %}
+    <!-- Stores Activation -->
+    <div class="modal fade" id="de-activate-stores-{{store.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">De-Activate a Store</h5>    
+            </div>
+            <div class="modal-body ">
+                <h2>Are want to De-Activate {{store.name}} Store?</h2>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" obj-id={{store.id}} business-type="store" class="activation btn btn-primary">De-Activate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- Delete Stores  -->
+    <div class="modal fade" id="de-delete-stores-{{store.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete a Store</h5>    
+            </div>
+            <div class="modal-body ">
+                <h2>Are want to delete {{store.name}} Store?</h2>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" obj-id={{store.id}} business-type="store" class="delete btn btn-danger">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+    <!-- Workshops Modals -->
+    {% for workshop in workshops %}
+    <div class="modal fade" id="de-activate-workshops-{{workshop.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">De-Activate a Workshop</h5>    
+            </div>
+            <div class="modal-body ">
+                <h2>Are want to De-Activate {{workshop.name}} Workshop?</h2>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" obj-id={{workshop.id}} business-type="workshop" class="activation btn btn-primary">De-Activate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- Delete Workshops  -->
+    <div class="modal fade" id="de-delete-workshops-{{workshop.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete a Workshop</h5>    
+            </div>
+            <div class="modal-body ">
+                <h2>Are want to delete {{workshop.name}} Workshop?</h2>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" obj-id={{workshop.id}} business-type="workshop" class="delete btn btn-danger">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+    <!--  Delete Customers Modals -->
+    {% for customer in customers %}
+    <div class="modal fade" id="delete-customers-{{customer.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete a Customer</h5>    
+            </div>
+            <div class="modal-body ">
+                <h2>Are want to delete {{customer.name}} ?</h2>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" obj-id={{customer.id}} business-type="free" class="delete btn btn-danger">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+    <script src="{% static 'profiles/js/adminstration.js' %}"></script>
+{% endblock content %}

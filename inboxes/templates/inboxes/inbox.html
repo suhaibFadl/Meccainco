@@ -1,0 +1,44 @@
+{% extends "chat_base.html" %}
+{% block chat_content %}
+<div class="row h-75 justify-content-center">
+    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 d-flex flex-column align-items-center border">
+        <div class="w-100 shadow-sm p-5 text-center mb-5">
+            <h1>CONTACTS</h1>
+        </div>
+        {% for contact in contacts %}
+            {% comment %} <div class="badge bg-success float-right">5</div> {% endcomment %}
+                <a href="{% url 'inboxes:chat'  id=contact.contactInbx.id type=my_inbox.type %}" class="row w-75">
+                    <div class="col-3">
+                        <img src="
+                    {% if contact.contactInbx.type == 0 %}
+                    {{contact.contactInbx.meccanicoadmin.image.url}}
+                    {% elif contact.contactInbx.type == 1 %}
+                    {{contact.contactInbx.customerprofile.image.url}}
+                    {% elif contact.contactInbx.type == 2 %}
+                    {{contact.contactInbx.storeprofile.logo.url}}
+                    {% elif contact.contactInbx.type == 3 %}
+                    {{contact.contactInbx.workshopprofile.logo.url}}
+                    {% endif %}
+                    " class=" rounded-circle mr-1" alt="Vanessa Tucker" width="50" height="50">
+                    </div>
+                    <div class="col-5 ml-3 p-3">
+                        <p style="font-size:25px">{{contact.contactInbx}}</p>
+                        {% comment %} <div class="small"><span class="fas fa-circle chat-online"></span> Online</div> {% endcomment %}
+                    </div>
+                        {% if contact.unread_messages != 0 %}
+                        <div class="col-2 pt-3">
+                            <span class="rounded bg-danger text-white ml-5 p-2 h-50 mt-3 text-center" style="font-size:20px; width:35px;">
+                                {% if contact.unread_messages < 9 %}
+                                {{contact.unread_messages}}
+                                {% else %} +9
+                                {% endif %}
+                            </span>
+                        </div>
+                   
+                    {% endif %}
+                </a>                  
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock chat_content %}

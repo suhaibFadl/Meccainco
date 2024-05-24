@@ -1,0 +1,608 @@
+{% extends "base.html" %}
+{% load static %}
+{% load ratings %}
+
+{% block scripts %}
+{% endblock scripts %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'stars_rating/css/style.css' %}">
+{% endblock css %}
+
+{% block title %} {{product.part.name}}{% endblock title %}    
+
+{% block content %}
+   <div class="product-single product-detail-sticky mb-5">
+      <div class="container">
+         <div class="row">
+            <div class="detail-view-items col-12 col-sm-12 col-lg-12 order-1 order-lg-0 sidebar-left">
+               <!-- Start Single Product Detail -->
+               <div class="product-single product-sidebar">
+                   <div class="row">
+                       <!-- Start Product Store Features -->
+                       <div class="col-12 col-sm-12 col-md-7 product-store-features">
+                           <!-- Start Product Thumb Slider -->
+                           <div class="product-img-thumb">
+                               <div class="product-single-img-slider position-relative">
+                                   <!-- Start Product Label -->
+                                   {% comment %} <div class="product-label">
+                                       <span class="label new">New</span>
+                                       <span class="label sale">Sale</span>
+                                   </div> {% endcomment %}
+                                   <!-- End Product Label -->
+
+                                   <!-- Start Product Single Images -->
+                                   <div class="product-single-photo slider thumbnails-single">
+                                       <div class="single-item zoom product-gallery-image">
+                                           <img class="img-fluid blur-up lazyload" src="{{product.part.image.url}}" data-src="{{product.part.imgage.url}}" title="image" />
+                                       </div>
+                                       {% for img in product.productimage_set.all %}
+                                       <div class="single-item zoom product-gallery-image">
+                                          <img class="img-fluid blur-up lazyload" src="{{ img.image.url }}" data-src="{{ img.image.url }}" alt="image" title="image" />
+                                       </div>                           
+                                       {% comment %} {% if user == product.store.store.owner %}
+                                       <a href="{% url 'products:delete_product_image' id=img.id %}">Delete</a>
+                                       {% endif %} {% endcomment %}
+                                       {% endfor %}
+                                   </div>  
+                                   <!-- End Product Single Images -->
+
+                                   <!-- Start Product Action -->
+                                   <div class="product-gallery-actions">
+                                       <a href="#open-video-popup" class="action-btn video-popup open-video-popup"><i class="ti-control-play"></i></a>
+                                       <a id="lightgallery-btn" class="action-btn gallery-popup lightgallery-btn"><i class="ti-zoom-in"></i></a>
+                                   </div>
+                                   <!-- End Product Action -->
+
+                                   <!-- Start Product Details Video Popup -->
+                                   {% comment %} <div id="open-video-popup" class="youtube-video-popup magnific-popup mfp-hide">
+                                       <div class="embed-responsive embed-responsive-16by9">
+                                           <iframe class="embed-responsive-item" src="about:blank" allowfullscreen=""></iframe>
+                                       </div>
+                                   </div> {% endcomment %}
+                                   <!-- End Product Details Video Popup -->
+                               </div>     
+
+                               <!-- Start Product Thumb Images -->
+                               <div class="product-thumb slider thumbnail-items">
+                                   <div class="thumb-item"><img class="img-fluid blur-up lazyload" src="{{product.part.image.url}}" data-src="{{product.part.image.url}}" alt="image" title="image" /></div>
+                                   {% for img in product.productimage_set.all %}
+                                   <div class="thumb-item"><img class="img-fluid blur-up lazyload" src="{{ img.image.url }}" data-src="{{ img.image.url }}" alt="image" title="image" /></div>
+                                 {% endfor %}
+                                 </div>
+                               <!-- End Product Thumb Images -->
+                           </div>
+                           <!-- End Product Thumb Slider -->
+
+                           <!-- Start Store Features -->
+                           {% comment %} <div class="store-features">
+                               <div class="row">
+                                   <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                       <div class="info-area d-table clearfix">
+                                           <div class="info-icon d-table-cell align-middle">
+                                               <img class="img-fluid blur-up lazyload" src="assets/images/icons/free-shipping.png" data-src="assets/images/icons/free-shipping.png" alt="image" title="image" />
+                                           </div>
+                                           <div class="info-details d-table-cell align-middle">
+                                               <h5>Free &amp; Fast Shipping</h5>
+                                               <span>FREE &amp; fast shipping to over 100+ countries & regions.</span>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                       <div class="info-area d-table">
+                                           <div class="info-icon d-table-cell align-middle">
+                                               <img class="img-fluid blur-up lazyload" src="assets/images/icons/safe-payment.png" data-src="assets/images/icons/safe-payment.png" alt="image" title="image" />
+                                           </div>
+                                           <div class="info-details d-table-cell align-middle">
+                                               <h5>Safe Payment</h5>
+                                               <span>Pay with the world’s most payment methods.</span>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                       <div class="info-area d-table">
+                                           <div class="info-icon d-table-cell align-middle">
+                                               <img class="img-fluid blur-up lazyload" src="assets/images/icons/return-exchange.png" data-src="assets/images/icons/return-exchange.png" alt="image" title="image" />
+                                           </div>
+                                           <div class="info-details d-table-cell align-middle">
+                                               <h5>Return &amp; Exchange</h5>
+                                               <span>30 Days Online Purchase - Return & Exchange Policy.</span>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                       <div class="info-area d-table">
+                                           <div class="info-icon d-table-cell align-middle">
+                                               <img class="img-fluid blur-up lazyload" src="assets/images/icons/support-24.png" data-src="assets/images/icons/support-24.png" alt="image" title="image" />
+                                           </div>
+                                           <div class="info-details d-table-cell align-middle">
+                                               <h5>Support 24/7</h5>
+                                               <span>We support 24/7 Have a question? Call Us <a href="tel:123-45-6789">123-45-6789</a></span>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div> {% endcomment %}
+                           <!-- End Store Features -->
+                       </div>
+                       <!-- End Product Store Features -->
+
+                       <!-- Start Product Info Details -->
+                       <div class="col-12 col-sm-12 col-md-5 product-info-details">
+                           <!-- Start Product Info -->
+                           <div class="profuct-info">
+                              <h1 class="product-title">{{product.part.name}}</h1>
+                               <div class="pro-revi-arrow clearfix">
+                                   <div class="product-starrating pull-left">
+                                    {% for i in "xxxxx" %}  <!-- Loop to render 5 stars -->
+                                    {% if forloop.counter <= average_rating %}  <!-- Display filled star if counter is less than or equal to rating -->
+                                      <i class="spr-icon fa fa-star"></i>
+                                    {% else %}  <!-- Display empty star if counter is greater than rating -->
+                                      <i class="spr-icon fa fa-star-o"></i>
+                                    {% endif %}
+                                  {% endfor %}
+                                       <span>{{product.product_rating.all.count}} Reviews</span>
+                                   </div>                              
+                               </div>
+                               <ul class="row no-gutters pro-info-list">
+                                    {% if product.is_available %}
+                                   <li class="col-12 col-md-4 col-sm-4 instock text-sm-left">In Stock</li>
+                                    {% else %}
+                                    <li class="col-12 col-md-4 col-sm-4  text-danger text-sm-left">Not Available</li>
+                                    {% endif %}
+                                   <li class="col-12 col-md-4 col-sm-4 vendor text-sm-center"><b>Vendor:</b><a href="{% url 'profiles:store_profile_details' store_profile=product.store.store.name%}"> {{product.store.store}}</a></li>
+                                   <li class="col-12 col-md-4 col-sm-4 vendor text-sm-center"><b>Status:</b> {{product.status}}</li>
+                                   {% comment %} <li class="col-12 col-md-4 col-sm-4 sku text-sm-right"><b>SKU:</b> 19115-rdxs</li> {% endcomment %}
+                               </ul>
+                           </div>
+                           <!-- End Product Info -->
+
+                           <!-- Start Product Price -->
+                           {% comment %} <ul class="d-sm-flex flex-sm-row align-items-sm-center product-price-info">
+                               <li class="product-price m-0"><span class="sale-price">${{product.price}}</span></li>
+                           </ul> {% endcomment %}
+                           <!-- End Product Price -->
+
+                           {% comment %} <!-- Start Product List Info -->
+                           <ul class="d-flex flex-column pro-lists">
+                               <li><i class="fa fa-check mr-2" aria-hidden="true"></i>{{product.status}}</li>                           
+                           </ul>
+                           <!-- End Product List Info --> {% endcomment %}
+                           {% if product.store.store.owner != user  %}
+                              {% if product.is_available %}
+                                 <div class="addToBox">
+                                    <form action="#">
+                                       <div class="d-sm-flex flex-sm-row">
+                                          <!-- Start Product Quantity -->
+                                          {% if product in  request.user.customerprofile.orderitemslist.products.all %}
+                                          <div class="product-form-item product-submit btn-block">
+                                             <a href="#" class="btn btn-primary disabled btn-block product-btn-cart add-cart" disabled>Ordered</a>
+                                          </div>
+                                          {% else %}
+                                          <div class="product-form-item product-quantity" id="product-quantity-div">
+                                             <div class="qty-box">
+                                                <button type="button" class="qtyminus button" value=""><i class="fa fa-minus"></i></button>
+                                                <input type="text" id="product-quantity" name='quantity' value='1' class="qty-input" />                             
+                                                <button type="button" class="qtyplus button" value=""><i class="fa fa-plus"></i></button>
+                                             </div>
+                                          </div>
+                                          <div class="product-form-item product-submit btn-block">
+                                             <a href="#" product-id='{{product.id}}' class="order-btn btn btn-primary btn-block product-btn-cart add-cart">Order</a>
+                                          </div>
+                                          {% comment %} <button class="order-btn-{{product.id}}" onclick="order('{{product.id}}')" id="order_btn">Order</button> {% endcomment %}
+                                          {% endif %}
+                                          {% comment %} <div class="product-form-item product-quantity">
+                                                <div class="qty-box">
+                                                   <button type="button" class="qtyminus button" value=""><i class="fa fa-minus"></i></button>
+                                                   <input type="text" name='quantity' value='1' class="qty-input" />                             
+                                                   <button type="button" class="qtyplus button" value=""><i class="fa fa-plus"></i></button>
+                                                </div>
+                                          </div>
+                                          <!-- End Product Quantity -->
+                                          <!-- Start Product Add Cart -->
+                                          <div class="product-form-item product-submit btn-block">
+                                                <a href="cart.html" class="btn btn-primary btn-block product-btn-cart add-cart">Add to Cart</a>
+                                          </div>
+                                          <!-- End Product Add Cart --> {% endcomment %}
+                                       </div>                           
+                                    </form>
+                                 </div>
+                                 <div class="wish-size-ship clearfix">
+                                    <!-- Start Product Wish List -->
+                                    <div class="wishlistOuter pull-left">
+                                       <a href="wishlist.html"><i class="ti-heart align-middle mr-1"></i> <span class="align-middle">Add To Wishlist</span></a>
+                                    </div>
+                                    <!-- End Product Wish List -->
+                                 </div>  
+                              {% else %}
+                                 <div class="product-form-item product-submit btn-block">
+                                    <a href="#" class="btn btn-primary disabled btn-block product-btn-cart add-cart" disabled>Not Avialable</a>
+                                 </div>
+                              {% endif %}
+                           {% else %}
+                           <div class="row justify-content-center w-100">
+                              <div class="product-form-item product-submit btn-block col-5">
+                                 <a class="order-btn btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal" style="font-size:20px" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Add Image</a>
+                              </div>
+                              <div class="product-form-item product-submit btn-block col-5">
+                                 <a href="{% url 'products:update_product' id=product.id %}" class="order-btn btn btn-secondary btn-block" style="font-size:20px">Edit</a>
+                              </div>
+                           </div>
+                           <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Add Images</h5>                        
+                                  </div>
+                                  <form method='POST' action="" enctype="multipart/form-data">
+                                  <div class="modal-body">
+                                       {% csrf_token %}
+                                       <div class="form-group m-3">
+                                           <label>Upload image</label>
+                                           <input required name="images" type="file" multiple class="form-control-file">
+                                       </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type='submit' class="btn btn-primary m-3">Submit</button>
+                                  </div>
+                                 </form>
+                                </div>
+                              </div>
+                            </div>
+                            
+                           {% endif %}
+
+                          
+                           <!-- End Cart Box -->
+                                <!-- Start Store Features -->
+                                <div class="store-features">
+                                 <div class="row">
+                                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                         <div class="info-area d-table clearfix">
+                                             <div class="info-icon d-table-cell align-middle">
+                                                 <img class="img-fluid blur-up lazyload" src="../../static/images/icons/free-shipping.png" data-src="../../static/images/icons/free-shipping.png" alt="image" title="image" />
+                                             </div>
+                                             <div class="info-details d-table-cell align-middle">
+                                                 <h5>Fast Shipping</h5>
+                                                 <span>Fast shipping to all of Libya.</span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                         <div class="info-area d-table">
+                                             <div class="info-icon d-table-cell align-middle">
+                                                 <img class="img-fluid blur-up lazyload" src="../../static/images/icons/return-exchange.png" data-src="../../static/images/icons/return-exchange.png" alt="image" title="image" />
+                                             </div>
+                                             <div class="info-details d-table-cell align-middle">
+                                                 <h5>Return &amp; Exchange</h5>
+                                                 <span>30 Days Online Purchase - Return & Exchange Policy.</span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                         <div class="info-area d-table">
+                                             <div class="info-icon d-table-cell align-middle">
+                                                 <img class="img-fluid blur-up lazyload" src="../../../static/images/icons/support-24.png" data-src="../../../static/images/icons/support-24.png" alt="image" title="image" />
+                                             </div>
+                                             <div class="info-details d-table-cell align-middle">
+                                                 <h5>Support 24/7</h5>
+                                                 <span>We support 24/7 Have a question? Call Us <a href="tel:123-45-6789">{{product.store.phone_number}}</a></span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 </div>
+                             <!-- End Store Features -->
+
+                           <!-- Start Checkout Info -->
+                           {% comment %} <div class="checkout-safe">
+                               <fieldset>
+                                   <legend>Guaranteed Safe Checkout</legend>
+                                   <img class="img-fluid" src="assets/images/icons/checkout-icon.png" alt="Guaranteed Safe Checkout" title="Guaranteed Safe Checkout" />
+                               </fieldset>
+                           </div> {% endcomment %}
+                           <!-- Start Product Checkout Info -->
+
+                           <!-- Start Product Social Media -->
+                           {% comment %} <div class="social-media">
+                               <ul class="d-flex flex-row">
+                                   <li><span>Share:</span></li>
+                                   <li><a href="#" title="Facebook"><i class="ti-facebook"></i></a></li>
+                                   <li><a href="#" title="Twitter"><i class="ti-twitter"></i></a></li>
+                                   <li><a href="#" title="Google Plus"><i class="ti-google"></i></a></li>
+                                   <li><a href="#" title="Pinterest"><i class="ti-pinterest"></i></a></li>
+                                   <li><a href="#" title="Email"><i class="ti-email"></i></a></li>
+                               </ul>
+                           </div> {% endcomment %}
+                           <!-- Start Product Social Media -->
+                       </div>
+                       <!-- End Product Info Details -->
+                   </div>
+               </div>
+               <!-- End Single Product Detail -->
+           </div>
+            <!-- Start Product Store Features -->
+          
+            <!-- End Product Store Features -->
+
+            <!-- Start Product Info Details -->
+           
+            <!-- End Product Info Details -->
+         </div>
+      </div>
+   </div>
+   <!-- End Single Product Detail -->
+
+   <!-- Start Product Detail Tabs -->
+   <div id="products-detail-tabs" class="products-detail-tabs sections-spacing mt-5">
+      <div class="container">
+         <!-- Start Product Tabs -->
+         <ul class="drawer-tabs tabs text-center">
+            <li class="active" data-tab="tab1"><a>Product Details</a></li>
+            <li data-tab="tab2"><a>Product Reviews</a></li>
+            {% comment %} <li data-tab="tab3"><a>Size Chart</a></li>
+            <li data-tab="tab4"><a>Shipping & Returns</a></li>
+            <li data-tab="tab5"><a>Custom Tab</a></li> {% endcomment %}
+         </ul>
+         <!-- End Product Tabs -->
+
+         <!-- Start Product Tabs Details -->
+         <div class="product-tabs responsiveTabs">
+            <!-- Start Product Details Tab1 -->
+            <h3 class="d_active tab-drawer-heading" data-tab="tab1"><a>Product Details</a></h3>
+            <div id="tab1" class="drawertab-content">
+                  <p>{{product.description}}</p>
+                  <h3>Cars Models</h3>
+                  <ul class="d-flex flex-column pro-lists">
+                     {% for car in product.part.car.all %}
+                     <li><i class="fa fa-check mr-2" aria-hidden="true"></i>{{car}} - {{car.manufacturing_year}}</li> 
+                     {% endfor %}
+                  </ul>
+                  {% comment %} <div class="product-info-img">
+                     <div class="row">
+                        <div class="col-12 col-sm-6 col-md-6">
+                              <img class="img-fluid blur-up lazyload" src="assets/images/others/product-details1.jpg" data-src="assets/images/others/product-details1.jpg" alt="image" title="image" />
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-6">
+                              <img class="img-fluid blur-up lazyload" src="assets/images/others/product-details1.jpg" data-src="assets/images/others/product-details1.jpg" alt="image" title="image" />
+                        </div>
+                     </div>
+                  </div> {% endcomment %}
+                  {% comment %} <p>Praesent vestibulum congue tellus at fringilla. Curabitur vitae semper sem, eu convallis est. Cras felis nunc commodo eu convallis vitae interdum non nisl. Maecenas ac est sit amet augue pharetra convallis nec danos dui. Cras suscipit quam et turpis eleifend vitae malesuada magna congue. Damus id ullamcorper neque. Sed vitae mi a mi pretium aliquet ac sed elit. Pellentesque nulla eros accumsan quis justo at tincidunt lobortis denimes loremous. Suspendisse vestibulum lectus in lectus volutpat, ut dapibus purus pulvinar. Vestibulum sit amet auctor ipsum.</p> {% endcomment %}
+                  {% comment %} <table class="table table-striped product-info-table">
+                     <tbody>
+                        <tr>
+                              <td>Proof</td>
+                              <td>PDF Proof</td>
+                        </tr>
+                        <tr>
+                              <td>Samples</td>
+                              <td>Digital, Printed</td>
+                        </tr>
+                        <tr>
+                              <td>Wrapping</td>
+                              <td>Yes, No</td>
+                        </tr>
+                        <tr>
+                              <td>Uv Gloss Coating</td>
+                              <td>No Shrink Wrapping, Shrink in 25s, Shrink in 50s, Shrink in 100s</td>
+                        </tr>
+                        <tr>
+                              <td>Weight</td>
+                              <td>0.05, 0.06, 0.07ess cards</td>
+                        </tr>
+                     </tbody>
+                  </table> {% endcomment %}
+            </div>
+            <!-- End Product Details Tab1 -->
+
+            <!-- Start Product Reviews Tab2 -->
+            <h3 class="tab-drawer-heading" data-tab="tab2"><a>Product Reviews</a></h3>
+            <div id="tab2" class="drawertab-content">
+                  <div class="product-review">
+                     <h4>Customer Reviews</h4>
+                     <div class="customer-review d-sm-flex align-items-center">
+                        <div class="product-starrating m-0 flex-grow-1 pull-left">
+                           {% for i in "xxxxx" %}  <!-- Loop to render 5 stars -->
+                              {% if forloop.counter <= average_rating %}  <!-- Display filled star if counter is less than or equal to rating -->
+                              <i class="spr-icon fa fa-star"></i>
+                              {% else %}  <!-- Display empty star if counter is greater than rating -->
+                              <i class="spr-icon fa fa-star-o"></i>
+                              {% endif %}
+                           {% endfor %}
+                              <span class="ml-2">Based on {{product.product_rating.all.count}} reviews</span>
+                        </div>
+                        {% if user.is_authenticated %}
+                           <button type="submit" class="btn btn-secondary pull-right write-review-btn">Write a Comment</button>
+                        {% else %}
+                           <p>
+                              <a class="border-bottom" href="{% url 'users:login' %}">Login</a> Or <a class="border-bottom" href="{% url 'users:register' %}">Signup</a> to Write a Comment
+                           </p>
+                        {% endif %}
+                     </div>
+                  </div>
+                  {% comment %} {% if user.is_authenticated %}
+                  <form action="" method="POST" id="comment_form" class="comment_form">
+                    <div>
+                       <label for="comment">Type Comment here</label>
+                        {% csrf_token %} 
+                        {{ comment_form }}
+
+                       <input type="submit" value="Post"></div>  
+                    </div>
+                  </form>
+                  {% else %} <h2>You need to Login to comment</h2> 
+                  {% endif %} {% endcomment %}
+              
+              
+                  <div class="product-review-form">
+                     <h4>Write a Comment</h4>
+                     <form action="#" method="POST" id="comment_form"  class="comment_form needs-validation" novalidate>
+                        {% csrf_token %} 
+                        <div class="form-group">
+                           <label for="{{ form.content.id_for_label }}">Body of Comment (1500)</label>
+                              {{ comment_form.content }}
+                              <div class="invalid-feedback">Please enter review details.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Comment</button>
+                        <input id="id_product" type="hidden" name="product" value="{{product.id}}">
+                    </form>
+                  </div>
+                  <div class="product-review-list">
+                     <ul id="review-list">
+                        {% for comment in comments %}
+                        <li>
+                           <p class="review-date"><b>{{ comment.author }}</b> - {{comment.created}}</p>         
+                           <p> {{ comment.content }}</p>
+                           <a href="#">Report as Inappropriate</a>
+                        </li>
+                        {% endfor %}                  
+                     </ul>
+                  </div>
+            </div>
+            <!-- End Product Reviews Tab2 -->
+
+            <!-- Start Product Size Chart Tab3 -->
+            <h3 class="tab-drawer-heading" data-tab="tab3"><a>Size Chart</a></h3>
+            <div id="tab3" class="drawertab-content">
+                  <div class="row size-chart-conversion">
+                     <div class="col-12 col-sm-6 col-md-6 size-chart-table">
+                        <h4>Single Size Conversion</h4>
+                        <table class="table table-striped product-info-table">
+                              <tbody>
+                                 <tr>
+                                    <td>UK</td>
+                                    <td>18</td>
+                                    <td>20</td>
+                                    <td>22</td>
+                                    <td>24</td>
+                                    <td>26</td>
+                                 </tr>
+                                 <tr>
+                                    <td>European</td>
+                                    <td>18</td>
+                                    <td>20</td>
+                                    <td>22</td>
+                                    <td>24</td>
+                                    <td>26</td>
+                                 </tr>
+                                 <tr>
+                                    <td>US</td>
+                                    <td>18</td>
+                                    <td>20</td>
+                                    <td>22</td>
+                                    <td>24</td>
+                                    <td>26</td>
+                                 </tr>
+                                 <tr>
+                                    <td>Australia</td>
+                                    <td>18</td>
+                                    <td>20</td>
+                                    <td>22</td>
+                                    <td>24</td>
+                                    <td>26</td>
+                                 </tr>
+                                 <tr>
+                                    <td>India</td>
+                                    <td>18</td>
+                                    <td>20</td>
+                                    <td>22</td>
+                                    <td>24</td>
+                                    <td>26</td>
+                                 </tr>
+                              </tbody>
+                        </table>
+                     </div>
+                     <div class="col-12 col-sm-6 col-md-6 text-center size-chart-img">
+                        <img class="img-fluid blur-up lazyload" src="assets/images/others/size-chart.png" data-src="assets/images/others/size-chart.png" alt="image" title="image" />
+                     </div>
+                  </div>
+            </div>
+            <!-- End Product Size Chart Tab3 -->
+
+            <!-- Start Product Shipping & Returns Tab4 -->
+            <h3 class="tab-drawer-heading" data-tab="tab4"><a>Shipping & Returns</a></h3>
+            <div id="tab4" class="drawertab-content">
+                  <div class="shipping-returns-content">
+                     <h4>Return Policy</h4>
+                     <p>Lorem Ipsum. Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris. Morbi accumsan ipsum velit. Nam nec tellus a odio tincidunt auctor a ornare odio. Sed non mauris vitae erat consequat auctor eu in elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra. Version of Lorem Ipsum. Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris. Morbi accumsan ipsum velit. Nam nec tellus a odio tincidunt auctor a ornare odio.</p>
+                     <h4>Shipping</h4>
+                     <p>Pellentesque ultrices ut sem sit amet lacinia. Sed nisi dui, ultrices ut turpis pulvinar. Sed fringilla ex eget lorem consectetur, consectetur blandit lacus varius. Duis vel scelerisque elit, et vestibulum metus. Integer sit amet tincidunt tortor. Ut lacinia ullamcorper massa, a fermentum arcu vehicula ut. Ut efficitur faucibus dui Nullam tristique dolor eget turpis consequat varius. Quisque a interdum augue. Nam ut nibh mauris. </p>
+                     <ul class="d-flex flex-column pro-lists">
+                        <li><i class="fa fa-check mr-2" aria-hidden="true"></i>Version of Lorem Ipsum. Proin gravida nibh vel velit auctor aliquet.</li>
+                        <li><i class="fa fa-check mr-2" aria-hidden="true"></i>Aenean sollicitudin, lorem quis bibendum auctor.</li>
+                        <li><i class="fa fa-check mr-2" aria-hidden="true"></i>Nisi elit consequat ipsum, nec sagittis sem nibh id elit.</li>
+                        <li><i class="fa fa-check mr-2" aria-hidden="true"></i>Duis sed odio sit amet nibh vulputate cursus a sit amet mauris.</li>
+                     </ul>
+                  </div>
+            </div>
+            <!-- End Product Shipping & Returns Tab4 -->
+
+            <!-- Start Custom Tab Tab5 -->
+            <h3 class="tab-drawer-heading" data-tab="tab5"><a>Custom Tab</a></h3>
+            <div id="tab5" class="drawertab-content">
+                  <div class="custom-content">
+                     <h4>We are proud to present our Lorem Ipsum passage.</h4>
+                     <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer scrambled it to make a type specimen book.<br><br>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.<br><br>There are many variations of passages of Lorem Ipsum available.<br>Contrary to popular belief, Lorem Ipsum is not simply random text.</p>
+                  </div>
+            </div>
+            <!-- End Custom Tab Tab5 -->
+         </div>
+         <!-- End Product Tabs Details -->
+      </div>
+   </div>
+   <!-- End Product Detail Tabs -->
+
+     <!-- Start Related Product -->
+     {% comment %} <div class="related-product sections-spacing">
+      <div class="container">
+          <div class="section-header">
+              <h2>Related Workshops</h2>
+              <p>Best {{product.part.category}} Workshops in {{user.customerprofile.location.city}}</p>
+          </div>
+          <div class="row row-sp row-eq-height prcarousel">
+               {% for workshop in related_workshops %}
+               <div class="col-sp col-xl-4 col-lg-4 col-md-4 col-sm-6 col-6 product-col">
+                  <div class="product-item">
+                      <div class="product-image-action">
+                          <div class="product-image">
+                              <a href="{% url 'profiles:workshop_profile_details' workshop_profile=workshop.name %}">
+                                  <img class="img-fluid blur-up lazyload primary-img" src="{{workshop.logo.url}}" data-src="{{workshop.logo.url}}" alt="image" title="image" />
+                                  <img class="img-fluid blur-up lazyload product-imghover secondary-img" src="{{workshop.logo.url}}" data-src="{{workshop.logo.url}}" alt="image" title="image" />
+                              </a>
+                          </div>
+                      </div>
+                      <div class="product-details">
+                          <h3 class="product-vendor"><a href="">{{workshop.name}}</a></h3>                          
+                          <div class="product-starrating">
+                              {% for i in "xxxxx" %}  <!-- Loop to render 5 stars -->
+                                 {% if forloop.counter <= average_rating %}  <!-- Display filled star if counter is less than or equal to rating -->
+                                    <i class="spr-icon fa fa-star"></i>
+                                 {% else %}  <!-- Display empty star if counter is greater than rating -->
+                                    <i class="spr-icon fa fa-star-o"></i>
+                                 {% endif %}
+                              {% endfor %}
+                          </div>
+                      </div>
+                  </div>
+              </div>
+               {% endfor %}
+             
+           
+          </div>
+      </div>
+      </div> {% endcomment %}
+  <!-- End Related Product -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+      var url = "{% url 'orders:add_order_item' %}";
+      var cancel_item_url = "{% url 'orders:cancel_item' %}";
+   </script>
+   
+   <script src="{% static 'orders/js/add_order.js' %}"></script>
+   {% comment %} <script src="{% static 'orders/js/cancel_item.js' %}"></script> {% endcomment %}
+   <script src="{% static 'stars_rating/js/product_rating.js' %}"></script>
+
+   <script src="{% static 'products/js/add_comment.js' %}"></script>
+   <script src="{% static 'products/js/comment_channel.js' %}"></script>
+{% endblock content %}

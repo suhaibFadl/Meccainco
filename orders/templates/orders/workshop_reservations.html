@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'orders/css/filter-style.css' %}">
+{% endblock css %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %}{{user.workshopprofile.name}}{% endblock title %} 
+
+{% block content %}
+<div class="my-account-content">
+    <div class="container">
+        <div class="account-inner-info">
+            <div class="row">
+                <!-- Start My Account Nav -->
+                <div class="account-nav mb-5 mb-sm-0 col-12 col-sm-3 col-md-3">
+                    <div class="nav flex-row flex-sm-nowrap flex-sm-column nav-pills" id="v-pills-tab" role="tablist">
+                        <a class="nav-link active" onclick="filterSelection('all')" href="#" data-toggle="pill" role="tab">All</a>
+                        <a class="nav-link" onclick="filterSelection('Requested')" href="#" role="tab" data-toggle="pill" aria-selected="false">Requested</a>
+                        <a class="nav-link" onclick="filterSelection('Make an Appointment')" href="#" role="tab" data-toggle="pill" aria-selected="false">Make An Appointment</a>
+                        <a class="nav-link" onclick="filterSelection('Confirmed')" href="#" role="tab" data-toggle="pill" aria-selected="false">Confirmed</a>
+                        <a class="nav-link" onclick="filterSelection('Car In The Garage')" href="#" role="tab" data-toggle="pill" aria-selected="false">Car In The Garage</a>
+                        <a class="nav-link" onclick="filterSelection('Under The Maintenance')" href="#" role="tab" data-toggle="pill" aria-selected="false">Under The Maintenance</a>
+                        <a class="nav-link" onclick="filterSelection('Fixed')" href="#" role="tab" data-toggle="pill" aria-selected="false">Fixed</a>
+                        <a class="nav-link" onclick="filterSelection('Workshop Canceled')" href="#" role="tab" data-toggle="pill" aria-selected="false">Workshop Canceled</a>
+                        <a class="nav-link" onclick="filterSelection('Customer Canceled')" href="#" role="tab" data-toggle="pill" aria-selected="false">Customer Canceled</a>
+                    </div>
+                </div>
+                <!-- End My Account Nav -->
+
+                <!-- Start My Account Details -->
+                <div class="account-details col-12 col-sm-9 col-md-9">
+                    <div class="tab-content" id="account-tabContent">
+                      <!-- Start Dashboard -->
+                        {% for reservation in reservations %}
+                        <div class="filterDiv {{ reservation.get_status_display}} w-75 mb-5">
+                            <div class="card shadow-sm">                          
+                                <div class="card-body pl-5">
+                                    <div class="row mb-3">
+                                        <a class="col-sm-6 col-4" href="#"><b>{{reservation.customer}}</b></a>
+                                        <div class="col-sm-6 col-4 align d-flex justify-content-center"><span class="badge reservation-status-{{reservation.status}}"><h5 class="m-0"><b>{{ reservation.get_status_display}}</b></h5></span></div>
+                                    </div>
+                                    {% if reservation.status > 1 %}
+                                    <p class="card-text">Time: {{reservation.time}}</p>
+                                    {% endif %}
+                                    <a  class="btn btn-outline-primary px-5 py-2" href="{% url 'orders:workshop_reservation' id=reservation.id %}">Details</a>
+                                </div>
+                            </div>                    
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+                <!-- End My Account Details -->
+            </div>
+        </div>
+    </div>
+</div>
+
+    {{user.username|json_script:"customer-username"}}
+    {{user.workshopprofile.id|json_script:"workshop_id"}}
+    {% comment %} <script>
+        var workshop_id = {{user.workshopprofile.id}};
+        console.log(workshop_id);
+    </script> {% endcomment %}
+<script src="{% static 'orders/js/orders_filter.js' %}"></script>
+<script src="{% static 'orders/js/append_reservation.js' %}"></script>
+
+{% endblock content %}

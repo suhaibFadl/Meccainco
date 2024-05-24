@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+{% block css %}
+{% endblock css %}
+{% block title %}Search Results{% endblock title %}    
+
+{% block content %}
+<style>
+    .image-container {
+        width: 150px; /* Set the width and height of the circular container */
+        height: 150px;   
+        border: 0px solid #000; /* Add a border to the container */
+        border-radius: 10%; /* Make the container circular */
+        overflow: hidden; /* Clip the image to the circular shape */
+        display: inline-block; /* Display the container inline */
+    }
+    .circular-image-container{
+        border-radius: 50%; /* Make the container circular */
+    }
+    .image-container img {
+        width: 100%; /* Make the image fill the container */
+        height: 100%;
+        object-fit: cover; /* Ensure the image covers the entire container */
+    }
+</style>
+<div id="searchResults">
+    
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    console.log("Brand, Car, Year");
+    $(document).ready(function () {
+        
+        // Assuming your MEDIA_URL is already defined in the template
+        const searchParams = new URLSearchParams(window.location.search);
+
+        // Extract the values of brand, car, and year
+        const brand = searchParams.get("brand");
+        const car = searchParams.get("car");
+        const year = searchParams.get("year");
+        console.log("Brand, Car, Year",brand, car, year);
+        const MEDIA_URL = "{% get_media_prefix %}";
+        const searchQuery = window.location.search.replace('?q=', '');
+        $.ajax({
+            url: "{% url 'products:ajax_filter' %}",
+            data: { brand: brand, car: car, year: year },
+            dataType: "json",
+            success: function (response) {
+                console.log(response.results)
+                // Append the new search results
+                $("#searchResults").empty();
+
+                if(response.results.length > 0) {
+                    $("#searchResults").append(`
+                    <div class="m-5 section-header clearfix product-starrating">
+                           <h2>Products</h2>
+                    </div>
+                    `)
+                    response.results.forEach(function (result) {
+                        const url = `products/${result.product_id}/`
+                        const store_url = `/profiles/stores/${result.store.name}`
+                        console.log(result.part.image)
+                        $("#searchResults").append(`
+                        <div class="p-5 row">           
+                            <div class="col-2">
+                                <a href="${url}">
+                                <div class="image-container">
+                                    <img src="${result.part.image}" alt="Product Image">
+                                </div>
+                                </a>
+                            </div>
+                            <div class="col-8">                            
+                                <h3 class="mb-0"><a href="${url}">${result.part.name}</a></h3> 
+                                <span class="font-weight-lighter"><a href="${store_url}">${result.store.name} Store</a></span>
+                                <p class="mt-3">${result.brand}</p>
+                                <p class="mt-3">${result.status}</p>
+                                <p>${result.price} LD</p>
+                                <p>${result.product_rating/1}<i class="pl-2 fa fa-star"></i></p>
+                            </div>
+                        </div>
+                        `);
+            
+                    });
+                }
+
+                if($("#searchResults").is(":empty")){
+                    $("#searchResults").append(`
+                    <!-- Start Empty Cart -->
+                    <div class="empty-content-page my-5">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-12 col-sm-10 col-md-8 col-lg-8 col-xl-7 text-center">
+                                    <div class="empty-page my-5">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                        <h2>Your Search Returns to Results!</h2>
+                                        <p>Search results for <b>“${searchQuery}”</b></p>
+                                        <a href="{% url 'products:index' %}" class="continue-shop btn btn-primary">Continue Shopping</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Empty Cart -->
+                    `);   
+                }
+            },
+            error: function () {
+                console.error('Error performing search');
+            }
+        });
+    });
+  
+</script>
+{% endblock content %}
+

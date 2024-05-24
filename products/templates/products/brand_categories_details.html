@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} {% endblock title %}    
+
+{% block content %}
+<div class="product-filter-sidebar">
+    <div class="container">
+        <div class="row">
+            <!-- Start Product Filter -->
+            <div class="col-12 col-sm-12 col-lg-3 sidebar sidebar-left">
+                <div class="filter-block">
+                    <h3 class="block-title shopby">SHOP BY</h3>
+                    <div class="block-content">
+                        <div class="ymm-formField clearfix">
+                            <form  id="Brand-Category-Form" action="#">                                          
+                                <div class="form-group">
+                                    <select  id="city" class="form-control" name="City">
+                                        <option value="" disabled selected>City</option>
+                                        {% for city in cities %}
+                                        <option value="{{ city }}">{{ city }}</option>
+                                        {% endfor %}
+                                        </select>
+                                </div>
+                                <div class="form-group">
+                                    <select id="car" class="form-control" name="Model">
+                                        <option value="" disabled selected>Category</option>
+                                        {% for category in categories %}
+                                        <option value="{{category}}">{{category}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select id="year" class="form-control" name="Year">
+                                        <option value="" disabled selected>Year</option>                                
+                                    </select>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col">
+                                        <input type="number" id="min-price" class="form-control" name="min-price" placeholder="Min Price">
+                                    </div>
+                                    <div class="col">
+                                        <input type="number" id="max-price" class="form-control" name="max-price" placeholder="Max Price">
+                                    </div>
+                                </div>                                    
+                                <div class="actions-btn d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-primary w-100" id="filter-button">Find</button>
+                                    {% comment %} <button type="button" class="btn btn-secondary w-50" id="reset-brand-form-button">Reset</button> {% endcomment %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Shop By -->
+            </div>
+            <!-- End Product Filter -->
+
+            <!-- Start Products -->
+            <div class="product-view-items product-grid col-12 col-sm-12 col-lg-9 sidebar-right">   
+                <!-- Start Filters Tollbar -->
+                <div class="filters-toolbar">
+                    <div class="row row-sp align-items-center">
+                        <div class="col-sp col-4 col-sm-4 text-left order-1 order-sm-0">
+                            <div class="filters-item">
+                                <a href="shop-grid-left-sidebar.html" title="Grid" class="btn active" data-view="grid"><i class="ti-view-grid"></i></a><a href="shop-list-left-sidebar.html" title="List" class="btn" data-view="list"><i class="ti-view-list-alt"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-sp col-12 col-sm-4 text-center mb-4 mb-sm-0 order-0 order-sm-1">
+                            <p class="m-0">Showing 1–16 of 21 results</p>
+                        </div>
+                        <div class="col-sp col-8 col-sm-4 text-right order-2 order-sm-2">
+                            <div class="filters-item">
+                                <div class="form-group m-0">
+                                    <label for="Sortby">Sort by:</label>
+                                    <select id="Sortby" class="form-control select2">
+                                        <option value="manual">Featured</option>
+                                        <option value="best-selling">Best Selling</option>
+                                        <option value="title-ascending">Alphabetically, A-Z</option>
+                                        <option value="title-descending">Alphabetically, Z-A</option>
+                                        <option value="price-ascending">Price, low to high</option>
+                                        <option value="price-descending">Price, high to low</option>
+                                        <option value="created-descending">Date, new to old</option>
+                                        <option value="created-ascending">Date, old to new</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Filters Tollbar -->
+
+                <!-- Start Products Grid -->
+                <div class="products products-grid">
+                    <div class="row row-sp row-eq-height" id="products-container">
+                        {% for product in products %}
+                        <div class="col-sp col-6 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                            <div class="product-item">
+                                <div class="product-image-action">
+                                    <div class="product-image">
+                                        <a href="{% url 'products:product_details' id=product.id %}">
+                                            <img class="img-fluid blur-up lazyload" src="{{ product.part.image.url }}" data-src="{{ product.part.image.url }}" alt="image" title="image" />
+                                            <img class="img-fluid blur-up lazyload product-imghover" src="{{ product.part.image.url }}" data-src="{{ product.part.image.url }}" alt="image" title="image" />
+                                        </a>
+                                    </div>
+                                    {% comment %} <div class="product-counter clearfix" data-countdown="2024/10/01"></div> {% endcomment %}
+                                    <div class="product-action">
+                                        <ul>
+                                            <li class="actions-addcart" data-toggle="tooltip" data-placement="top" title="add to cart"><a href="#open-addtocart-popup" class="btn open-addtocart-popup"><i class="icon ti-shopping-cart"></i></a></li>
+                                            <li class="actions-quickview" data-toggle="tooltip" data-placement="top" title="quick view"><a href="#open-quickview-popup" class="btn open-quickview-popup"><i class="icon ti-zoom-in"></i></a></li>
+                                            <li class="actions-wishlist" data-toggle="tooltip" data-placement="top" title="add to wishlist"><a href="#open-wishlist-popup" class="btn open-wishlist-popup"><i class="icon ti-heart"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-details">
+                                    <h3 class="product-title"><a href="{% url 'products:product_details' id=product.id %}">{{product.part}}</a></h3>
+                                    <h4 class="product-vendor">
+                                        <a href="{% url 'profiles:store_profile_details' store_profile=product.store.store %}">
+                                        {{product.store.store}} Store
+                                        </a>
+                                    </h4>                                       
+                                    <div class="product-starrating">
+                                        {% for i in "xxxxx" %}  <!-- Loop to render 5 stars -->
+                                            {% if forloop.counter <= product.average_rating %}  <!-- Display filled star if counter is less than or equal to rating -->
+                                            <i class="spr-icon fa fa-star"></i>
+                                            {% else %}  <!-- Display empty star if counter is greater than rating -->
+                                            <i class="spr-icon fa fa-star-o"></i>                           
+                                            {% endif %} 
+                                        {% endfor %}
+                                    </div>
+                                    <div class="product-price">
+                                        <span class="sale-price">{{product.price}}</span>
+                                    </div>
+                                    {% comment %} <div class="image-swatch-list">
+                                        <ul class="d-flex flex-row justify-content-center align-items-center">
+                                            <li class="active" data-toggle="tooltip" data-placement="top" title="xl"><img class="img-fluid" src="assets/images/products/product-1.jpg" alt="image" title="" /></li>
+                                            <li data-toggle="tooltip" data-placement="top" title="x"><img class="img-fluid" src="assets/images/products/product-1.jpg" alt="image" title="" /></li>
+                                            <li data-toggle="tooltip" data-placement="top" title="m"><img class="img-fluid" src="assets/images/products/product-1.jpg" alt="image" title="" /></li>
+                                            <li data-toggle="tooltip" data-placement="top" title="s"><img class="img-fluid" src="assets/images/products/product-1.jpg" alt="image" title="" /></li>
+                                        </ul>
+                                    </div> {% endcomment %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- End Products Grid -->
+            </div>
+            <!-- End Products -->
+        </div>
+    </div>
+</div>
+    <input id="brand" type="hidden" name="brand-select" value="{{brand}}">
+    <input id="category" type="hidden" name="car-select" value="{{category}}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    const brand_categories_filter_url = "{% url 'products:brand_categories_filter' %}"
+</script>
+    <script src="{% static 'products/js/brand_categories_filter.js' %}"></script>
+    {% comment %} <script>
+        const minPriceInput = document.getElementById('min-price');
+        const maxPriceInput = document.getElementById('max-price');
+        const priceError = document.getElementById('price-error');
+    
+        minPriceInput.addEventListener('input', function () {
+            const minPrice = parseFloat(minPriceInput.value);
+            const maxPrice = parseFloat(maxPriceInput.value);
+    
+            if (isNaN(minPrice) || isNaN(maxPrice)) {
+                priceError.textContent = '';
+                return;
+            }
+    
+            if (minPrice > maxPrice) {
+                priceError.textContent = 'Min Price cannot be greater than Max Price';
+                minPriceInput.value = maxPrice;
+            } else {
+                priceError.textContent = '';
+            }
+        });
+    
+        maxPriceInput.addEventListener('input', function () {
+            const minPrice = parseFloat(minPriceInput.value);
+            const maxPrice = parseFloat(maxPriceInput.value);
+    
+            if (isNaN(minPrice) || isNaN(maxPrice)) {
+                priceError.textContent = '';
+                return;
+            }
+    
+            if (maxPrice < minPrice) {
+                priceError.textContent = 'Max Price cannot be less than Min Price';
+                maxPriceInput.value = minPrice;
+            } else {
+                priceError.textContent = '';
+            }
+        });
+    </script> {% endcomment %}
+{% endblock content %}

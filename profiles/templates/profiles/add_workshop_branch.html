@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} Add Branch{% endblock title %}    
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row row-sp align-items-center">
+            <div class="col-sp col-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="page-title text-center mb-5">
+                   <h1>Add a new branch</h1>
+                </div>
+                <form method="POST" id="personForm"  class="register-form needs-validation" novalidate enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row ">
+                        <div class="form-group col-md-6">
+                            {% comment %} <label for="{{ form.branch_name.id_for_label }}">Branch Name *</label> {% endcomment %}
+                            {{ form.branch_name }}
+                            {% if form.is_bound and form.branch_name.value is not None %}
+                            {{ form.branch_name.errors }}
+                            {% endif %}
+                            <div class="invalid-feedback">Please the branch name.</div>
+                        </div>
+                        <div class="form-group col-md-6 align-items-center">
+                            {{ form.phone_number }}
+                            {% if form.is_bound and form.phone_number.value is not None %}
+                            {{ form.phone_number.errors }}
+                            {% endif %}
+                            <div class="invalid-feedback">Please enter your Phone Number.</div>
+                        </div>
+                    </div>
+                   <div class="row justify-content-center">                  
+                    <input type="submit" class="btn btn-primary w-50" value="Save">
+                   </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% comment %} <!-- Render each form field -->
+    {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {{ field.errors }}
+        </div>
+    {% endfor %}
+    <input type="submit" value="Save"> {% endcomment %}
+</form>
+
+
+{% endblock content %}

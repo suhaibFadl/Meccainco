@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %} Create a Store{% endblock title %}    
+
+{% block content %}
+<div class="breadcrumbs text-center">
+    <div class="container">
+        <h1>Create A Store</h1>
+       
+    </div>
+</div>
+<div class="login-account mt-5">
+    <div class="container">
+        <div class="row row-sp w-100">
+            <div class="mx-auto col-sp col-12 col-sm-12 col-md-6">
+                <form method="post" id="personForm" class="login-form needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.name }}
+                        <p class="text-danger">{{ form.name.errors }}</p>
+                        <div class="invalid-feedback">Please enter the store name.</div>
+                    </div>
+                    <div class="form-group align-items-center">
+                        {{ form.brands }}
+                        <p><small>*Press CTRL+Click to select Multiple</small></p>
+                        <div class="invalid-feedback">Please select at least one brand.</div>
+                    </div>
+                    <div class="form-group align-items-center">
+                        {{ form.categories }}
+                        <p><small>*Press CTRL+Click to select Multiple</small></p>
+                        <div class="invalid-feedback">Please select at least one category.</div>
+                    </div>
+                    <div class="form-group align-items-center">
+                        {{ form.bio }}
+                        <div class="invalid-feedback">Add some words to introduce your store.</div>
+                    </div>
+                    <div class="form-group align-items-center">
+                        {{ form.logo }}
+                        {% comment %} <div class="invalid-feedback">Please select a logo.</div> {% endcomment %}
+                    </div>
+                  
+                    <div class="form-group button-action clearfix text-center w-100">
+                            <button type="submit" class="btn btn-primary btn-block">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

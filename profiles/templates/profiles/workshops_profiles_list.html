@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %}Workops{% endblock title %}    
+
+{% block content %}
+    <div class="product-filter-sidebar">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="title-btn clearfix d-flex justify-content-center">
+                    <div class="section-header d-flex flex-column">
+                        <h1 class='mx-auto'>Workshops</h1>
+                        <h4 class='mx-auto'>Browse the huge variety of our workshops</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Start Product Filter -->
+                <div class="col-12 col-sm-12 col-lg-3 sidebar sidebar-left">
+                    <div class="filter-block">
+                        <h3 class="block-title shopby">SHOP BY</h3>
+                        <div class="block-content">
+                            <div class="ymm-formField clearfix">
+                                <form  id="Brand-Category-Form" action="#">                                          
+                                    <div class="form-group">
+                                        <select  id="city" class="form-control" name="City">
+                                            <option value="" disabled selected>City</option>
+                                            {% for city in cities %}
+                                            <option value="{{ city }}">{{ city }}</option>
+                                            {% endfor %}
+                                            </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select id="category" class="form-control" name="Model">
+                                            <option value="" disabled selected>Category</option>
+                                            {% for category in categories %}
+                                            <option value="{{category}}">{{category}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>                                   
+                                    <div class="form-group">
+                                        <select id="brand" class="form-control" name="Model">
+                                            <option value="" disabled selected>Brand</option>
+                                            {% for brand in brands %}
+                                            <option value="{{brand}}">{{brand}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>                                   
+                                    <div class="actions-btn d-flex justify-content-center">
+                                        <button type="submit" class="btn btn-primary w-100" id="filter-button">Find</button>
+                                        {% comment %} <button type="button" class="btn btn-secondary w-50" id="reset-brand-form-button">Reset</button> {% endcomment %}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Shop By -->
+                </div>
+                <!-- End Product Filter -->
+
+                <!-- Start Products -->
+                <div class="product-view-items product-grid col-12 col-sm-12 col-lg-9 sidebar-right">
+                    <!-- Start Products Grid -->
+                    <div class="product-view-items product-grid col-12 col-sm-12 col-lg-9 sidebar-right">
+                        <!-- Start Products List -->
+                        <div class="products products-lists">
+                            <div class="row row-sp row-eq-height" id="products-container">
+                                {% for workshop in workshops_profiles %}
+                                <div class="col-12 col-sm-12 col-md-12 col-sp">
+                                    <div class="product-item row no-gutters">
+                                        <div class="product-image-action col-12 col-sm-12 col-md-3">
+                                            <div class="product-image">
+                                                <a href="{% url 'profiles:workshop_profile_details' workshop_profile=workshop.name %}">
+                                                    <img class="img-fluid blur-up lazyload" src="{{ workshop.logo.url }}" data-src="{{ workshop.logo.url }}" alt="image" title="image" />
+                                                    <img class="img-fluid blur-up lazyload product-imghover" src="{{ workshop.logo.url }}" data-src="{{ workshop.logo.url }}" alt="image" title="image" />
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="product-details col-12 col-sm-12 col-md-9">
+                                            <h1 class="product-title"><a class="font-weight-bold" href="{% url 'profiles:workshop_profile_details' workshop_profile=workshop.name %}">{{workshop.name}}<a></h1>
+                                            <h4 class="product-vendor">{{workshop.bio}}</h4>
+
+                                            <div class="product-starrating">      
+                                                {% for i in "xxxxx" %}  <!-- Loop to render 5 stars -->
+                                                    {% if forloop.counter <= workshop.average_rating %}  <!-- Display filled star if counter is less than or equal to rating -->
+                                                    <i class="spr-icon fa fa-star"></i>
+                                                    {% else %}  <!-- Display empty star if counter is greater than rating -->
+                                                    <i class="spr-icon fa fa-star-o"></i>                           
+                                                    {% endif %} 
+                                                {% endfor %}
+                                            </div>
+                                            <div class="mt-3">
+                                                <ul class="d-flex flex-row align-items-center">
+                                                    {% for category in workshop.categories.all %}
+                                                    <li class="active" data-toggle="tooltip" data-placement="top">
+                                                     {{ category.name}}
+                                                    </li>&nbsp; 
+                                                    {% endfor %}         
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <!-- End Products List -->
+                    </div>
+                    {% comment %} <div class="products products-grid">
+                        <div class="row row-sp row-eq-height" id="products-container">
+                            {% for store in stores %}
+                            <div class="col-sp col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                                <div class="product-item">
+                                    <div class="product-image-action">
+                                        <div class="product-image">
+                                            <a href="{% url 'profiles:store_profile_details' store_profile=store.name %}">
+                                                <img class="img-fluid blur-up lazyload" src="{{ store.logo.url }}" data-src="{{ store.logo.url }}" alt="image" title="image" />
+                                                <img class="img-fluid blur-up lazyload product-imghover" src="{{ store.logo.url }}" data-src="{{ store.logo.url }}" alt="image" title="image" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-details">
+                                        <h3 class="product-title"><a href="{% url 'profiles:store_profile_details' store_profile=store.name %}">{{store.name}}</a></h3>
+                                        <h4 class="product-vendor">{{store.bio}}</h4>   
+                                        <div class="product-starrating">      
+                                            {% for i in "xxxxx" %}  <!-- Loop to render 5 stars -->
+                                                {% if forloop.counter <= store.average_rating %}  <!-- Display filled star if counter is less than or equal to rating -->
+                                                <i class="spr-icon fa fa-star"></i>
+                                                {% else %}  <!-- Display empty star if counter is greater than rating -->
+                                                <i class="spr-icon fa fa-star-o"></i>                           
+                                                {% endif %} 
+                                            {% endfor %}
+                                        </div>                                
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div> {% endcomment %}
+                    <!-- End Products Grid -->
+                </div>
+                <!-- End Products -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const workshops_filter_url = "{% url 'products:brand_workshops_filter' %}"
+        const MEDIA_URL = "{% get_media_prefix %}";
+    </script>
+    <script src="{% static 'profiles/js/workshops_filter.js' %}"></script>
+    {% for store_profile in stores_profiles %}
+        {{store_profile.name}}
+        </a>
+    {% endfor %}
+{% endblock content %}

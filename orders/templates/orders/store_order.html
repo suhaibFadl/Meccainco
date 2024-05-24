@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'orders/css/order-bar.css' %}">
+{% endblock css %}
+{% block scripts %}
+{% endblock scripts %}
+
+{% block title %}Order{% endblock title %}    
+
+{% block content %}
+  
+{% if order.status <= 4 %}
+<div id="order-bar" class="container px-1 px-md-4 py-5 mx-auto w-75">
+    <div class="card border-0">
+        {% comment %} <div class="row d-flex justify-content-between px-3 top">
+            <div class="d-flex">
+                <h5>ORDER <span class="text-primary font-weight-bold">#Y34XDHR</span></h5>
+            </div>
+            <div class="d-flex flex-column text-sm-right">
+                <p class="mb-0">Expected Arrival <span>01/12/19</span></p>
+                <p>USPS <span class="font-weight-bold">234094567242423422898</span></p>
+            </div>
+        </div> {% endcomment %}
+        <!-- Add class 'active' to progress -->
+        <div class="row d-flex justify-content-center">
+            <div class="col-12">
+            <ul id="progressbar" class="text-center">
+                {% for i in "xxxx" %}  <!-- Loop to render 5 stars -->
+                    {% if forloop.counter <= order.status %}
+                    <li class="active step0"></li>
+                    {% else %}
+                    <li class="step0"></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            </div>
+        </div>
+        <div class="row w-100 m-0 ">
+            <div class="col-3 w d-flex flex-column icon-content justify-content-center">
+                    <img class="icon mx-auto" src="https://i.imgur.com/9nnc9Et.png">
+                <div class="row d-flex flex-column mx-auto">
+                    <p class="font-weight-bold mx-auto"><b>Order</b><br>Waiting for Approval</p>
+                </div>
+            </div>
+            <div class="col-3  icon-content  d-flex flex-column">
+                <img class="icon mx-auto" src="https://i.imgur.com/u1AzR7w.png">
+                <div class="d-flex flex-column mx-auto">
+                    <p class="font-weight-bold">Order<br>In Progress</p>
+                </div>
+            </div>
+            <div class="col-3 icon-content d-flex flex-column">
+                <img class="icon mx-auto" src="https://i.imgur.com/TkPm63y.png">
+                <div class="d-flex flex-column mx-auto">
+                    <p class="font-weight-bold">Order<br>En Route</p>
+                </div>
+            </div>
+            <div class="col-3 icon-content d-flex flex-column">
+                <img class="icon mx-auto" src="https://i.imgur.com/HdsziHP.png">
+                <div class="d-flex flex-column mx-auto">
+                    <p class="font-weight-bold">Order<br>Dellivered</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="cart-content-inner mt-5 pt-5">
+    <div class="container">
+        <div class="row">
+            <!-- Start Cart Details -->
+            <div class="cart-view-table col-12 col-sm-12 col-lg-9 sidebar-left mx-auto">
+                <!-- Start Cart Table -->
+                <div class="table-content table-responsive">
+                    <table class="table table-bordered border-0 table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Image</th>
+                                <th class="text-center text-sm-left">Product Name</th>
+                                <th class="text-center">Price</th>
+                                <th class="text-center">Qty</th>
+                                {% if order.get_status_display == 'Waiting'%}
+                                <th class="text-center">Availability</th>
+                                {% endif %}                               
+                                <th class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.orders.all %}
+                            <tr>
+                                <td class="pro-img text-center"><a href="{% url 'products:product_details' id=item.product.id %}"><img class="img-fluid blur-up lazyload" src="{{item.product.part.image.url}}" data-src="{{item.product.part.image.url}}" alt="image" title="image" width="100" /></a></td>
+                                <td class="pro-del text-center text-sm-left">
+                                    <p class="mb-1 pro-name"><a href="{% url 'products:product_details' id=item.product.id %}">{{item.product.part.name}}</a></p>
+                                </td>
+                                <td class="pro-price text-center">${{item.product.price}}</td>
+                                <td class="pro-qty text-center">
+                                    <div class="row justify-content-center p-0">
+                                       <p>{{item.quantity}}</p>
+                            
+                                    </div>
+                                </td>
+                                {% if  order.status == 1 %}
+                                <td>
+                                    <div id="unavailable-btn-{{item.id}}" class="row justify-content-center">
+                                        {% if item.product.is_available == False %}
+                                        <button class="btn border disabled">Unvailable</button>
+                                        {% else %}
+                                        <button id="not-available-{{item.id}}" class="not-available btn btn-danger" onclick="notAvailable('{{item.id}}')">Unvailable</button>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                {% endif %}
+                                <td class="pro-total text-center" id="total-item-{{item.id}}">${{item.item_total_price}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- End Cart Table -->
+                <!-- Start Cart Action Button -->
+                {% comment %} <div class="cart-table-action clearfix">
+                    <a href="#" class="btn btn-secondary pull-left">Update Cart</a>
+                    <a href="#" class="btn btn-secondary pull-right">Continue Shopping</a>
+                </div> {% endcomment %}
+                <!-- End Cart Action Button -->
+            </div>
+            <!-- End Cart Details -->
+
+            <!-- Start Cart Sidebar -->
+            {% comment %} {% if user == order.store.store.owner %} {% endcomment %}
+            <div class="cart-view-summary col-12 col-sm-12 col-lg-3 sidebar sidebar-right">
+                <div class="cart-order-summary">
+                    <h3 class="order-summary-title">Order - Information</h3>
+                </div>
+                <div class="cart-subtotal clearfix my-3 px-3">
+                    <p class="subtle-title m-0 pull-left text-uppercase">Customer</p>
+                    <p class="sabtotal m-0 pull-right"><a  href="{% url 'inboxes:chat'  id=order.customer.inbox.id type=2 %}"><i class="icon ti-email m-1"></i></a><a href="#">{{ order.customer}}</a></p>
+                </div>
+                <div class="cart-subtotal clearfix my-3 px-3">
+                    <p class="subtle-title m-0 pull-left text-uppercase">City</p>
+                    <p class="sabtotal m-0 pull-right"><a href="#">{{ order.customer.location.city}}</a></p>
+                </div>
+                <div class="cart-subtotal clearfix my-3 px-3">
+                    <p class="subtle-title m-0 pull-left text-uppercase">Phone Num</p>
+                    <p class="sabtotal m-0 pull-right"><a href="#">{{ order.customer.phone_num}}</a></p>
+                </div>
+                <div class="cart-subtotal clearfix my-3 px-3">
+                    <p class="subtle-title m-0 pull-left text-uppercase">Subtotal</p>
+                    <p class="sabtotal m-0 pull-right">$<span id="order-total">{{order.total}}</span></p>
+                </div>
+                {% if order.note != '' %}
+                <div class="cart-subtotal row clearfix my-3 px-3">
+                    <a href="#" class="border-bottom border-dark  mx-auto" data-toggle="modal" data-target="#order-description">
+                        Customer Notes
+                    </a>
+                </div>
+                {% endif %}
+                <div class="cart-checkout my-5">
+                    {% if order.status < 4 %}
+                    <div id="update-btn" class="my-2">
+                        {% if order.status == 1 %}
+                        <button id="confirm-order" class="btn btn-primary btn-block" onclick="update_store_order('{{order.id}}', '2')">Confirm Order</button>
+                        {% elif order.status == 2 %}
+                        <button class="btn btn-primary btn-block" onclick="update_store_order('{{order.id}}', '3')">En Route</button>
+                        {% elif order.status == 3 %}
+                        <button class="btn btn-primary btn-block" onclick="update_store_order('{{order.id}}', '4')">Delivered</button>
+                        {% endif %}
+                        <button class="btn btn-secondary btn-block" data-toggle="modal" data-target="#customer-location">Location</button>                          
+                    </div>
+                    {% endif %}
+
+                    {% if order.status <= 2 %}
+                    <button id="confirm-btn"  onclick="cancel_order({{order.id}})" class="btn btn-outline-secondary btn-block border">Cancel</button>
+                    {% elif order.status == 5 %}
+                    <button class="btn btn-secondary btn-block" disabled>Store Canceled</button>
+                    {% elif order.status == 6 %}
+                    <button class="btn btn-secondary btn-block" disabled>Customer Canceled</button>
+                    {% endif %}    
+                </div>
+            </div>  
+            {% comment %} {% endif %} {% endcomment %}
+          
+            <!-- End Cart Sidebar -->
+        </div>
+    </div>
+</div>
+
+    <script>
+        var order_id = {{order.id}};
+        var store_confirm_order_url = "{% url 'orders:store_confirm_order'%}"
+        var update_store_order_url = "{% url 'orders:update_store_order'%}"
+        var cancel_order_url = "{% url 'orders:cancel_order'%}"
+        var notAvailable_url = "{% url 'orders:notAvailable'%}"
+        var delivered_order_url = "{% url 'orders:delivered_order'%}"
+    </script>
+    <script src="{% static 'orders/js/store_order.js' %}"></script>
+    {% comment %} <script src="{% static 'orders/js/update_status.js' %}"></script> {% endcomment %}
+    {{order.customer.location.latitude|json_script:"lat"}}
+    {{order.customer.location.longtitude|json_script:"longt"}}
+    <script src="{% static 'orders/js/add_order.js' %}"></script>
+    <div class="modal fade" id="customer-location" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{order.customer}} Location</h5>
+                </div>
+                <div class="modal-body">
+                    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
+                    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
+                    <div id='map' class="w-100" style='height: 400px;'></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="order-description" tabindex="-1" aria-labelledby="order-description" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{order.customer}} Notes</h5>
+                </div>
+                <div class="modal-body">
+                    {{order.note}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% comment %} <div id='map' style='width: 400px; height: 300px;'></div> {% endcomment %}
+    <script src="{% static 'orders/js/map.js' %}"></script>
+{% endblock content %}
